@@ -73,5 +73,5 @@ app.post('/api/analyze', async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`🚀 Backend in ascolto sulla porta ${PORT}`);
+  console.log(`Backend in ascolto sulla porta ${PORT}`);
 });
