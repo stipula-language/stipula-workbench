@@ -7,33 +7,40 @@ const cors = require('cors');
 const app = express();
 const PORT = 4000;
 
-// Middleware
-app.use(cors()); // Abilita richieste da origini diverse (il frontend React)
-app.use(express.json()); // Permette di leggere il JSON dal body delle richieste
+app.use(cors());
+app.use(express.json());
 
-// Definisci l'endpoint per l'analisi
 app.post('/api/analyze', async (req, res) => {
-  const { code } = req.body;
+  const { code, short } = req.body;
 
   if (!code) {
     return res.status(400).json({ error: 'Nessun codice fornito.' });
   }
 
-  // Definisci i percorsi in modo robusto
   const analyzerDir = path.join(__dirname, '..', 'analyzer');
   const tempFileName = `contract_${Date.now()}.stipula`;
   const tempFilePath = path.join(analyzerDir, tempFileName);
 
   try {
-    // 1. Salva il codice in un file temporaneo
     await fs.writeFile(tempFilePath, code);
 
     const venvPythonPath = path.join(analyzerDir, 'venv', 'bin', 'python');
     
-    // Aggiungiamo un log per debug
-    console.log(`Tentando di eseguire analizzatore con: ${venvPythonPath}`);
+    const args = [
+      path.join(analyzerDir, 'analyzer.py'),
+      tempFilePath,
+      '--compact'
+    ];
 
-    const pythonProcess = spawn(venvPythonPath, [path.join(analyzerDir, 'analyzer.py'), tempFilePath, '--readable', '--compact']);
+    if (short) {
+      args.push('--short');
+    } else {
+      args.push('--readable');
+    }
+
+    console.log(`Eseguendo l'analizzatore con gli argomenti: ${args.join(' ')}`);
+
+    const pythonProcess = spawn(venvPythonPath, args);
 
     let stdoutData = '';
     let stderrData = '';
@@ -46,23 +53,27 @@ app.post('/api/analyze', async (req, res) => {
       stderrData += data.toString();
     });
 
-    // 3. Attendi la fine del processo
     pythonProcess.on('close', async (code) => {
-      // 4. Elimina il file temporaneo
       await fs.unlink(tempFilePath);
 
       if (stderrData) {
         console.error(`Errore dall'analizzatore: ${stderrData}`);
         return res.status(500).json({ error: stderrData });
       }
+      const header = '+-------------+\n|   Results   |\n+-------------+\n';
+      if (short) {
+        
+        if (stdoutData.trim() === header.trim()) {
+          stdoutData = `${header}\n✅ Analysis complete: No issues (warnings, expired, or unreachable code) found.`;
+        }
+      }
+      
 
-      // 5. Invia il risultato al frontend
       res.status(200).json({ output: stdoutData });
     });
 
   } catch (error) {
     console.error('Errore del server:', error);
-    // Assicurati che il file temporaneo venga eliminato anche in caso di errore
     try {
       await fs.unlink(tempFilePath);
     } catch (cleanupError) {

@@ -1,0 +1,216 @@
+{
+  "cont": {
+    "name": "Deposit",
+    "assets": [
+      "flour"
+    ],
+    "fields": [
+      "cost_flour"
+    ],
+    "firstState": "Start",
+    "parties": [
+      "Client",
+      "Farm"
+    ],
+    "agreements": [
+      {
+        "parties": [
+          "Client",
+          "Farm"
+        ],
+        "fields": [
+          "cost_flour"
+        ]
+      }
+    ],
+    "functions": [
+      {
+        "name": "begin",
+        "fromState": [
+          "Start"
+        ],
+        "id": "e1f2a3b4-c5d6-e7f8-a9b0-c1d2e3f4a5b6",
+        "toState": "Run",
+        "assets": [],
+        "fields": [],
+        "caller": [
+          "Farm"
+        ],
+        "conditions": [
+          {
+            "par1": "",
+            "par2": "",
+            "par3": "",
+            "par4": ""
+          }
+        ],
+        "actions": [
+          {
+            "type": "SEND1",
+            "id": "f1a2b3c4-d5e6-f7a8-b9c0-d1e2f3a4b5c6",
+            "par1": "cost_flour",
+            "par2": "Client",
+            "par3": "",
+            "par4": "",
+            "conditions": [
+              {
+                "par1": "",
+                "par2": "",
+                "par3": "",
+                "par4": ""
+              }
+            ],
+            "ifThen": [],
+            "elseThen": []
+          },
+          {
+            "type": "WHEN1",
+            "id": "a0b9c8d7-e6f5-a4b3-c2d1-e0f9a8b7c6d5",
+            "par1": "365",
+            "par2": "Run",
+            "par3": "End",
+            "par4": "",
+            "conditions": [
+              {
+                "par1": "",
+                "par2": "",
+                "par3": "",
+                "par4": ""
+              }
+            ],
+            "ifThen": [
+              {
+                "type": "SEND1",
+                "id": "b9c8d7e6-f5a4-b3c2-d1e0-f9a8b7c6d5e4",
+                "par1": "cost_flour",
+                "par2": "Client",
+                "par3": "",
+                "par4": "",
+                "conditions": [
+                  {
+                    "par1": "",
+                    "par2": "",
+                    "par3": "",
+                    "par4": ""
+                  }
+                ],
+                "ifThen": [],
+                "elseThen": []
+              }
+            ],
+            "elseThen": []
+          }
+        ],
+        "isHO": false,
+        "HOinput": ""
+      },
+      {
+        "name": "send",
+        "fromState": [
+          "Run"
+        ],
+        "id": "c8d7e6f5-a4b3-c2d1-e0f9-a8b7c6d5e4f3",
+        "toState": "Run",
+        "assets": [
+          "h"
+        ],
+        "fields": [],
+        "caller": [
+          "Farm"
+        ],
+        "conditions": [
+          {
+            "par1": "",
+            "par2": "",
+            "par3": "",
+            "par4": ""
+          }
+        ],
+        "actions": [
+          {
+            "type": "SEND1",
+            "id": "d7e6f5a4-b3c2-d1e0-f9a8-b7c6d5e4f3a2",
+            "par1": "h",
+            "par2": "Client",
+            "par3": "",
+            "par4": "",
+            "conditions": [
+              {
+                "par1": "",
+                "par2": "",
+                "par3": "",
+                "par4": ""
+              }
+            ],
+            "ifThen": [],
+            "elseThen": []
+          },
+          {
+            "type": "MOVE1",
+            "id": "e6f5a4b3-c2d1-e0f9-a8b7-c6d5e4f3a2b1",
+            "par1": "h",
+            "par2": "flour",
+            "par3": "",
+            "par4": "",
+            "conditions": [
+              {
+                "par1": "",
+                "par2": "",
+                "par3": "",
+                "par4": ""
+              }
+            ],
+            "ifThen": [],
+            "elseThen": []
+          }
+        ],
+        "isHO": false,
+        "HOinput": ""
+      },
+      {
+        "name": "buy",
+        "fromState": [
+          "Run"
+        ],
+        "id": "f5a4b3c2-d1e0-f9a8-b7c6-d5e4f3a2b1c0",
+        "toState": "Run",
+        "assets": [],
+        "fields": [],
+        "caller": [
+          "Farm"
+        ],
+        "conditions": [
+          {
+            "par1": "w",
+            "par2": "<=",
+            "par3": "(flour * cost_flour)",
+            "par4": ""
+          }
+        ],
+        "actions": [
+          {
+            "type": "MOVE1",
+            "id": "a4b3c2d1-e0f9-a8b7-c6d5-e4f3a2b1c0d9",
+            "par1": "((10 / flour) * cost_flour)",
+            "par2": "flour, Client",
+            "par3": "",
+            "par4": "",
+            "conditions": [
+              {
+                "par1": "",
+                "par2": "",
+                "par3": "",
+                "par4": ""
+              }
+            ],
+            "ifThen": [],
+            "elseThen": []
+          }
+        ],
+        "isHO": false,
+        "HOinput": ""
+      }
+    ],
+    "HOinputs": []
+  }
+}

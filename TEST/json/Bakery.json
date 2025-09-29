@@ -1,0 +1,418 @@
+{
+  "cont": {
+    "name": "SPA",
+    "assets": [
+      "wallet",
+      "property"
+    ],
+    "fields": [
+      "price",
+      "prop",
+      "pretzelMissed"
+    ],
+    "firstState": "Sign1",
+    "parties": [
+      "Chris",
+      "Eva"
+    ],
+    "agreements": [
+      {
+        "parties": [
+          "Chris",
+          "Eva"
+        ],
+        "fields": [
+          "price",
+          "prop"
+        ]
+      }
+    ],
+    "functions": [
+      {
+        "name": "sign",
+        "fromState": [
+          "Sign1"
+        ],
+        "id": "1e2f3a4b-0001-0001-0001-c1d2e3f4a5b6",
+        "toState": "Sign2",
+        "assets": [],
+        "fields": [
+          "x"
+        ],
+        "caller": [
+          "Eva"
+        ],
+        "conditions": [
+          {
+            "par1": "true",
+            "par2": "",
+            "par3": "",
+            "par4": ""
+          }
+        ],
+        "actions": [
+          {
+            "type": "SEND1",
+            "id": "1e2f3a4b-0002-0002-0002-c1d2e3f4a5b6",
+            "par1": "x",
+            "par2": "Chris",
+            "par3": "",
+            "par4": "",
+            "conditions": [
+              {
+                "par1": "",
+                "par2": "",
+                "par3": "",
+                "par4": ""
+              }
+            ],
+            "ifThen": [],
+            "elseThen": []
+          }
+        ],
+        "isHO": false,
+        "HOinput": ""
+      },
+      {
+        "name": "sign",
+        "fromState": [
+          "Sign2"
+        ],
+        "id": "2f3a4b5c-0003-0003-0003-d2e3f4a5b6c7",
+        "toState": "Init",
+        "assets": [],
+        "fields": [
+          "x"
+        ],
+        "caller": [
+          "Chris"
+        ],
+        "conditions": [
+          {
+            "par1": "true",
+            "par2": "",
+            "par3": "",
+            "par4": ""
+          }
+        ],
+        "actions": [
+          {
+            "type": "SEND1",
+            "id": "2f3a4b5c-0004-0004-0004-d2e3f4a5b6c7",
+            "par1": "x",
+            "par2": "Eva",
+            "par3": "",
+            "par4": "",
+            "conditions": [
+              {
+                "par1": "",
+                "par2": "",
+                "par3": "",
+                "par4": ""
+              }
+            ],
+            "ifThen": [],
+            "elseThen": []
+          },
+          {
+            "type": "WHEN1",
+            "id": "2f3a4b5c-0005-0005-0005-d2e3f4a5b6c7",
+            "par1": "28D",
+            "par2": "Init",
+            "par3": "Fail",
+            "par4": "",
+            "conditions": [
+              {
+                "par1": "",
+                "par2": "",
+                "par3": "",
+                "par4": ""
+              }
+            ],
+            "ifThen": [
+              {
+                "type": "MOVE1",
+                "id": "2f3a4b5c-0006-0006-0006-d2e3f4a5b6c7",
+                "par1": "wallet",
+                "par2": "Chris",
+                "par3": "",
+                "par4": ""
+              },
+              {
+                "type": "MOVE1",
+                "id": "2f3a4b5c-0007-0007-0007-d2e3f4a5b6c7",
+                "par1": "property",
+                "par2": "Eva",
+                "par3": "",
+                "par4": ""
+              }
+            ],
+            "elseThen": []
+          }
+        ],
+        "isHO": false,
+        "HOinput": ""
+      },
+      {
+        "name": "pay",
+        "fromState": [
+          "Init"
+        ],
+        "id": "3a4b5c6d-0008-0008-0008-e3f4a5b6c7d8",
+        "toState": "Init",
+        "assets": [
+          "w"
+        ],
+        "fields": [],
+        "caller": [
+          "Chris"
+        ],
+        "conditions": [
+          {
+            "par1": "property",
+            "par2": "<",
+            "par3": "prop",
+            "par4": "&&"
+          },
+          {
+            "par1": "w",
+            "par2": "==",
+            "par3": "price",
+            "par4": ""
+          }
+        ],
+        "actions": [
+          {
+            "type": "MOVE1",
+            "id": "3a4b5c6d-0009-0009-0009-e3f4a5b6c7d8",
+            "par1": "m",
+            "par2": "wallet",
+            "par3": "",
+            "par4": "",
+            "conditions": [
+              {
+                "par1": "",
+                "par2": "",
+                "par3": "",
+                "par4": ""
+              }
+            ],
+            "ifThen": [],
+            "elseThen": []
+          }
+        ],
+        "isHO": false,
+        "HOinput": ""
+      },
+      {
+        "name": "transfer",
+        "fromState": [
+          "Init"
+        ],
+        "id": "6d7e8f90-0018-0018-0018-b6c7d8e9f0a1",
+        "toState": "Closing",
+        "assets": [
+          "p"
+        ],
+        "fields": [],
+        "caller": [
+          "Eva"
+        ],
+        "conditions": [
+          {
+            "par1": "wallet",
+            "par2": "==",
+            "par3": "price",
+            "par4": "&&"
+          },
+          {
+            "par1": "p",
+            "par2": "==",
+            "par3": "property",
+            "par4": ""
+          }
+        ],
+        "actions": [
+          {
+            "type": "MOVE1",
+            "id": "6d7e8f90-0019-0019-0019-b6c7d8e9f0a1",
+            "par1": "p",
+            "par2": "property",
+            "par3": "",
+            "par4": ""
+          },
+          {
+            "type": "MOVE1",
+            "id": "6d7e8f90-0020-0020-0020-b6c7d8e9f0a1",
+            "par1": "property",
+            "par2": "Chris",
+            "par3": "",
+            "par4": ""
+          },
+          {
+            "type": "MOVE1",
+            "id": "6d7e8f90-0021-0021-0021-b6c7d8e9f0a1",
+            "par1": "wallet",
+            "par2": "Eva",
+            "par3": "",
+            "par4": ""
+          }
+        ],
+        "isHO": false,
+        "HOinput": ""
+      },
+      {
+        "name": "pretzel_warranty_breach",
+        "fromState": [
+          "Closing"
+        ],
+        "id": "7e8f90a1-0024-0024-0024-c7d8e9f0a1b2",
+        "toState": "Breach",
+        "assets": [],
+        "fields": [
+          "x"
+        ],
+        "caller": [
+          "Chris"
+        ],
+        "conditions": [
+          {
+            "par1": "true",
+            "par2": "",
+            "par3": "",
+            "par4": ""
+          }
+        ],
+        "actions": [
+          {
+              "type": "SEND1",
+              "id": "2f3a4b5c-0004-0004-0004-d2e3f4a5b6c7",
+              "par1": "x",
+              "par2": "Eva",
+              "par3": "",
+              "par4": "",
+              "conditions": [
+                  {
+                      "par1": "",
+                      "par2": "",
+                      "par3": "",
+                      "par4": ""
+                  }
+              ],
+              "ifThen": [],
+              "elseThen": []
+          },
+          {
+              "type": "WHEN1",
+              "id": "2f3a4b5c-0005-0005-0005-d2e3f4a5b6c7",
+              "par1": "28D",
+              "par2": "Init",
+              "par3": "Fail",
+              "par4": "",
+              "conditions": [
+                  {
+                      "par1": "",
+                      "par2": "",
+                      "par3": "",
+                      "par4": ""
+                  }
+              ],
+              "ifThen": [
+                  {
+                      "type": "MOVE1",
+                      "id": "2f3a4b5c-0006-0006-0006-d2e3f4a5b6c7",
+                      "par1": "wallet",
+                      "par2": "Chris",
+                      "par3": "",
+                      "par4": ""
+                  },
+                  {
+                      "type": "MOVE1",
+                      "id": "2f3a4b5c-0007-0007-0007-d2e3f4a5b6c7",
+                      "par1": "property",
+                      "par2": "Eva",
+                      "par3": "",
+                      "par4": ""
+                  }
+              ],
+              "elseThen": []
+          }
+      ],
+        "isHO": false,
+        "HOinput": ""
+      },
+      {
+        "name": "repair",
+        "fromState": [
+          "Breach"
+        ],
+        "id": "8f90a1b2-0029-0029-0029-d8e9f0a1b2c3",
+        "toState": "End",
+        "assets": [],
+        "fields": [
+          "x"
+        ],
+        "caller": [
+          "Eva"
+        ],
+        "conditions": [
+          {
+            "par1": "true",
+            "par2": "",
+            "par3": "",
+            "par4": ""
+          }
+        ],
+        "actions": [
+          {
+            "type": "SEND1",
+            "id": "8f90a1b2-0030-0030-0030-d8e9f0a1b2c3",
+            "par1": "x",
+            "par2": "Chris",
+            "par3": "",
+            "par4": ""
+          }
+        ],
+        "isHO": false,
+        "HOinput": ""
+      },
+      {
+        "name": "refund",
+        "fromState": [
+          "Refund"
+        ],
+        "id": "90a1b2c3-0031-0031-0031-e9f0a1b2c3d4",
+        "toState": "End",
+        "assets": [
+          "w"
+        ],
+        "fields": [
+          "x"
+        ],
+        "caller": [
+          "Eva"
+        ],
+        "conditions": [
+          {
+            "par1": "w",
+            "par2": "==",
+            "par3": "10",
+            "par4": ""
+          }
+        ],
+        "actions": [
+          {
+            "type": "MOVE1",
+            "id": "90a1b2c3-0032-0032-0032-e9f0a1b2c3d4",
+            "par1": "w",
+            "par2": "Chris",
+            "par3": "",
+            "par4": ""
+          }
+        ],
+        "isHO": false,
+        "HOinput": ""
+      }
+    ]
+  }
+}

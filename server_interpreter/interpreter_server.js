@@ -57,12 +57,14 @@ wss.on('connection', ws => {
 
                     const javaArgs = [
                         '-jar',
-                        'HOstipula_lan.jar',
+                        'Stipula-LAN.jar',
                         contractFilePath,
                         ...hoInputFilePaths
                     ];
                     
-                    javaProcess = spawn('java', javaArgs, { cwd: __dirname });
+                    const javaExecutable = 'java';
+
+                    javaProcess = spawn(javaExecutable, javaArgs, { cwd: __dirname });
 
                     javaProcesses.set(ws, javaProcess);
 

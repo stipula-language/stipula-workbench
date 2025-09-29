@@ -10,7 +10,7 @@
     "setup:analyzer-venv": "python3 -m venv ./analyzer/venv",
     "install:analyzer": "./analyzer/venv/bin/pip install -r ./analyzer/requirements.txt",
     "install:all-node": "npm run install:backend && npm run install:frontend && npm run install:interpreter",
-    "install:all-python": "npm run setup:analyzer-venv && npm run install:analyzer",
+    "install:all-python": "rm -rf ./analyzer/venv && npm run setup:analyzer-venv && npm run install:analyzer",
     "install:all": "npm run install:all-node && npm run install:all-python",
     "start:backend": "node backend/server.js",
     "start:frontend": "npm start --prefix ./frontend",
