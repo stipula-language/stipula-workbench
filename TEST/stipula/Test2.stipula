@@ -1,0 +1,15 @@
+/*
+It must show the expired code
+*/
+
+stipula Sample5 {
+    fields x 
+    
+	agreement(A){
+		A: x    // x = "2024-01-01"
+	} => @Init
+
+    @Init A: f()[] {
+        x >> @Cont {} => @End
+    } => @Cont
+}
