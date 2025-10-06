@@ -1,0 +1,989 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&display=swap');
+
+:root {
+  --primary-color: #007bff;
+  --primary-hover: #0056b3;
+  --danger-color: #dc3545;
+  --danger-hover: #c82333;
+  --background-color: #f4f7f9;
+  --surface-color: #ffffff;
+  --text-color: #333;
+  --text-secondary-color: #666;
+  --border-color: #dee2e6;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --border-radius: 8px;
+  --accent-color: #6c757d; 
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+.App {
+  text-align: center;
+}
+
+/* --- NEW STYLES FOR THE TWO-COLUMN LAYOUT --- */
+
+.main-content-area {
+  display: flex;
+  flex-direction: row;
+  gap: 20px; 
+  padding: 20px;
+  align-items: flex-start;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Left Panel: Editor */
+.editor-panel {
+  flex: 1;
+  padding: 15px;
+  background-color: var(--surface-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  transition: all 0.3s ease-in-out;
+}
+
+/* Right Panel: Code, Analyzer, Terminal */
+.output-panel {
+  flex: 1;
+  padding: 15px;
+  background-color: var(--surface-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  text-align: left; 
+  transition: all 0.3s ease-in-out;
+}
+
+/* --- COLLAPSE/EXPAND STYLES --- */
+.editor-panel.collapsed {
+  flex: 0 0 50px;
+  padding: 15px 10px;
+}
+
+.output-panel.collapsed {
+  flex: 0 0 50px; 
+  padding: 15px 10px;
+}
+
+.editor-panel.collapsed + .output-panel {
+  flex: 20; 
+}
+
+.output-panel.collapsed + .editor-panel {
+  flex: 20; 
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.panel-title {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #34495e;
+}
+
+.btn-collapse {
+  background: none;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary-color);
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: all 0.2s ease;
+}
+
+.btn-collapse:hover {
+  background-color: #f0f4f7;
+}
+
+.hidden {
+  display: none;
+}
+
+.output-panel .code {
+  background-color: #2D333B;
+  color: #F8F8F2; 
+  padding: 16px;
+  border-radius: 6px;
+  white-space: pre-wrap;
+  font-family: 'Fira Code', 'Courier New', Courier, monospace;
+  margin-bottom: 16px;
+  height: 100%;
+}
+/* --- CARD COMPONENT STYLES --- */
+.card {
+  background-color: var(--surface-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* Styling for the card titles (h3 within card-header) */
+.card-header h3 {
+  margin: 0;
+  font-weight: 600; 
+  font-size: 1.2rem;
+  color: #34495e; 
+}
+
+.card-content {
+  padding: 20px;
+  border-top: 1px solid var(--border-color);
+}
+
+.toggle-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--text-secondary-color);
+}
+
+/* --- TITLE STYLE (for general use outside cards, or if you prefer this style for cards) --- */
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  margin-top: 20px;
+  background-color: var(--primary-color);
+  padding-left: 10px;
+  line-height: 1.2;
+  padding-bottom: 10px;
+  padding-top: 2px;
+  border: 1px solid rgb(18, 58, 203);
+}
+
+/* --- GENERAL FORM STYLES --- */
+
+.list-box {
+  margin-top: 15px;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 10px;
+}
+
+li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px;
+  border-radius: 4px;
+  margin-bottom: 5px;
+  background-color: #f8f9fa;
+}
+
+.form-input, select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 0.95rem;
+  margin-top: 5px;
+}
+
+.btn {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+}
+
+.btn-delete {
+  background: none;
+  border: none;
+  color: var(--danger-color);
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.btn-delete:hover {
+  color: var(--danger-hover);
+}
+
+.add-item-form {
+  display: flex;
+  justify-content: center; 
+  align-items: center;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+/* --- MODIFIED STYLE FOR FORM SUBMIT BUTTONS TO BE LONGER --- */
+.add-item-form .btn-primary {
+  flex-shrink: 0; 
+  width: 150px;
+  padding: 10px; 
+}
+
+.agreement-row {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.add-button, .remove-button {
+  background-color: transparent;
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.remove-button {
+  border-color: var(--danger-color);
+  color: var(--danger-color);
+}
+
+.remove-button::before {
+  content: '-';
+}
+
+/* --- NEW TAB SWITCHER STYLE --- */
+.tabswitcher {
+  display: flex;
+  margin: 20px 0;
+  border-radius: 50px;
+  background-color: var(--surface-color);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  border: 1px solid var(--border-color); 
+}
+
+.tabswitcher button {
+  flex: 1;
+  padding: 12px 25px;
+  border: none;
+  background-color: transparent; 
+  color: var(--text-secondary-color);
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tabswitcher button:hover {
+  background-color: #f0f4f7;
+}
+
+.tabswitcher button.selected {
+  background-color: var(--primary-color);
+  color: white;
+  font-weight: 700;
+  box-shadow: 0 0 15px rgba(0, 123, 255, 0.4); 
+  position: relative;
+}
+
+.tabswitcher button.selected::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background-color: white; 
+  border-radius: 2px;
+}
+
+.tabswitcher button.selected {
+  background-color: var(--primary-color);
+  color: white;
+  font-weight: 700;
+  box-shadow: 0 4px 10px rgba(0, 123, 255, 0.4);
+  transform: translateY(-2px); 
+}
+
+.tabswitcher button {
+  transition: all 0.3s ease;
+}
+
+/* --- STILI PER IL MODALE DEL FUNCTION EDITOR --- */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+}
+
+.modal-content {
+  width: 90%;
+  max-width: 800px; 
+  max-height: 90vh; 
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  border-radius: 1%;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 25px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.modal-body {
+  padding: 25px;
+  overflow-y: auto; 
+  flex-grow: 1;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  padding: 15px 25px;
+  border-top: 1px solid var(--border-color);
+  background-color: #f8f9fa;
+  border-radius: 1%;
+}
+
+.form-row {
+    display: flex;
+    gap: 20px;
+    align-items: flex-end;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    flex: 1;
+}
+.form-group-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 12px;
+}
+
+
+/* --- STILI PER LA NUOVA FUNCTION LIST --- */
+.function-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.function-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px; 
+  background-color: var(--background-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+}
+
+.function-list-item-name {
+  font-weight: 500;
+  font-size: 1.1rem;
+}
+
+.function-list-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.empty-list-message {
+  text-align: center;
+  color: var(--text-secondary-color);
+  padding: 20px;
+}
+
+/* Stile per un bottone secondario (es. Edit, Cancel) */
+.btn.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+.btn.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+
+/* --- FILE MANAGEMENT SECTION --- */
+.grid-files {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px; 
+  padding: 20px;
+  margin: 20px;
+  background-color: var(--surface-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border-color);
+}
+
+.grid-files .description {
+  flex: 1; 
+  color: var(--text-secondary-color);
+  font-size: 0.95rem;
+}
+
+.files {
+  display: flex;
+  align-items: center;
+  gap: 15px; 
+}
+
+.files label {
+  font-weight: 500;
+  white-space: nowrap; 
+  color: var(--text-color);
+}
+
+.file-input {
+  border: none;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.9rem;
+  color: var(--text-secondary-color);
+}
+
+.file-input::file-selector-button {
+  padding: 10px 18px;
+  border: 1px solid var(--primary-color);
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  background-color: var(--surface-color);
+  color: var(--primary-color);
+  margin-right: 10px;
+}
+
+.file-input::file-selector-button:hover {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+/* --- APP HEADER --- */
+.app-header {
+  width: 100%;
+  padding: 1rem 2.5rem; 
+  background-color: var(--surface-color);
+  box-shadow: var(--shadow);
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 20px;
+}
+
+.app-header h2 {
+  margin: 0;
+  color: var(--primary-color);
+  font-size: 1.75rem;
+  font-weight: 600;
+  text-align: left;
+}
+
+/*------ICONE COLLAPS----*/
+.btn-collapse {
+  width: 34px;
+  height: 34px;
+  border: 1px solid #ccc;
+  border-radius: 50%;
+  background: #f9f9f9;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.btn-collapse:hover {
+  background: #eee;
+  transform: scale(1.05);
+}
+
+.chevrons {
+  position: relative;
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+}
+
+.chevrons::before,
+.chevrons::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  border-top: 2px solid #333;
+  border-right: 2px solid #333;
+  transform: translateY(-50%) rotate(45deg);
+  transition: transform 0.3s ease;
+}
+
+.chevrons::before {
+  left: 0;
+}
+
+.chevrons::after {
+  right: 0;
+}
+
+.btn-collapse.open .chevrons::before,
+.btn-collapse.open .chevrons::after {
+  transform: translateY(-50%) rotate(-135deg);
+}
+
+/*-------INTERPRETE-----*/
+/* Card principale */
+.interpreter-card {
+  margin-top: 20px;
+  background: #1e1e1e;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.interpreter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #2d2d2d;
+  padding: 10px 15px;
+  border-bottom: 1px solid #444;
+}
+
+.interpreter-header h3 {
+  margin: 0;
+  font-size: 16px;
+  color: #f0f0f0;
+}
+
+.interpreter-actions button {
+  margin-left: 10px;
+}
+
+/* Console */
+.interpreter-console {
+  background: #111;
+  color: #0f0;
+  font-family: monospace;
+  font-size: 14px;
+  padding: 12px;
+  height: 500px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+}
+
+/* Scrollbar custom */
+.interpreter-console::-webkit-scrollbar {
+  width: 8px;
+}
+.interpreter-console::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+.interpreter-console::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 4px;
+}
+.interpreter-console::-webkit-scrollbar-thumb:hover {
+  background: #777;
+}
+
+/* Input + send */
+.interpreter-input-form {
+  display: flex;
+  border-top: 1px solid #444;
+  background: #2d2d2d;
+  padding: 8px;
+}
+
+.interpreter-input {
+  flex-grow: 1;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 4px;
+  background: #1a1a1a;
+  color: #f0f0f0;
+  font-family: monospace;
+  margin-right: 8px;
+}
+
+.interpreter-input:disabled {
+  background: #333;
+  color: #777;
+}
+
+/* Bottoni */
+.btn-run, .btn-stop, .btn-send {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s ease;
+}
+
+.btn-run {
+  background: #4caf50;
+  color: white;
+}
+.btn-run:hover:not(:disabled) {
+  background: #45a049;
+}
+.btn-run.running {
+  background: #2e7d32;
+}
+
+.btn-stop {
+  background: #f44336;
+  color: white;
+}
+.btn-stop:hover:not(:disabled) {
+  background: #d32f2f;
+}
+
+.btn-send {
+  background: #008cba;
+  color: white;
+}
+.btn-send:hover:not(:disabled) {
+  background: #0077a7;
+}
+
+
+/*------CODE CARD---------*/
+.code-card {
+  background: #1e1e1e;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.code-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #2d2d2d;
+  padding: 10px 15px;
+  border-bottom: 1px solid #444;
+}
+
+.code-header h3 {
+  margin: 0;
+  font-size: 16px;
+  color: #f0f0f0;
+}
+
+.code-actions button {
+  margin-left: 8px;
+}
+
+/* Container for line numbers and code */
+.code-container {
+  display: flex;
+  background: #111;
+  font-family: monospace;
+  font-size: 14px;
+}
+
+/* Styles for the line number gutter */
+.line-numbers {
+  padding: 15px 10px;
+  color: #888;
+  text-align: right;
+  user-select: none; 
+  border-right: 1px solid #444;
+  background-color: #1a1a1a;
+  margin: 0;
+  line-height: 1.5; 
+}
+
+
+/* Area codice */
+.code-block {
+  flex-grow: 1; 
+  background: #111;
+  color: #f8f8f2;
+  font-family: monospace;
+  font-size: 14px;
+  line-height: 1.5; 
+  padding: 15px;
+  margin: 0;
+  overflow-x: auto; 
+  white-space: pre;
+  min-height: 300px;
+}
+
+.code-block.editable {
+    resize: none;
+    width: 100%;
+    border: none;
+    outline: none;
+    overflow-y: hidden; 
+}
+
+.code-block::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+.code-block::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+.code-block::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 4px;
+}
+.code-block::-webkit-scrollbar-thumb:hover {
+  background: #777;
+}
+
+/* Bottoni */
+.btn-copy, .btn-analyze, .btn-edit {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s ease;
+}
+
+.btn-copy {
+  background: #555;
+  color: white;
+}
+.btn-copy:hover:not(:disabled) {
+  background: #666;
+}
+
+.btn-analyze {
+  background: #008cba;
+  color: white;
+}
+.btn-analyze:hover:not(:disabled) {
+  background: #0077a7;
+}
+.btn-analyze:disabled {
+  background: #555;
+  cursor: not-allowed;
+}
+
+.btn-edit {
+  background: #ffc107; 
+  color: #212529;
+}
+.btn-edit:hover:not(:disabled) {
+  background: #e0a800;
+}
+.btn-edit:disabled {
+  background: #555;
+  cursor: not-allowed;
+  color: #ccc;
+}
+
+
+/* Box dei risultati analisi */
+.analysis-box {
+  padding: 12px;
+  margin: 10px;
+  border-radius: 6px;
+  font-family: monospace;
+}
+
+.analysis-box.success {
+  background: #1b3d1b;
+  color: #b2f5b2;
+  border: 1px solid #3c6e3c;
+}
+
+.analysis-box.error {
+  background: #3d1b1b;
+  color: #f5b2b2;
+  border: 1px solid #6e3c3c;
+}
+
+
+/* --- STILI PER ACTION VIEW --- */
+
+/* Contenitore principale per una singola azione */
+.action-card {
+  background-color: var(--background-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-md);
+  margin-left: 20px;
+  margin-top: 15px;
+  box-shadow: var(--shadow-light);
+  overflow: hidden; 
+}
+
+/* Header dell'azione con titolo e pulsante di eliminazione */
+.action-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f8f9fa; 
+  padding: 8px 15px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.action-title {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-secondary-color);
+  text-transform: uppercase;
+}
+
+/* Corpo dell'azione con gli input */
+.action-body {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 15px;
+}
+
+/* Gruppo per un input e la sua etichetta */
+.action-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.action-input-group label {
+  font-size: 0.9rem;
+  margin-bottom: 0;
+}
+.action-input-group .form-input, 
+.action-input-group select {
+  margin-top: 0;
+  width: auto; 
+  min-width: 150px; 
+}
+
+/* Stile per i connettori testuali come "to", "of", "then" */
+.action-connector {
+  color: var(--text-secondary-color);
+  font-weight: 500;
+  margin: 0 5px;
+  align-self: flex-end; 
+  padding-bottom: 12px;
+}
+
+/* Contenitore per le azioni annidate (IF/THEN/ELSE) */
+.action-nested-container {
+  width: 100%;
+  margin-top: 15px;
+  padding-left: 20px;
+  border-left: 3px solid var(--primary-color);
+  padding-top: 10px;
+}
+.action-nested-container > label {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--primary-color);
+}
+
+
+/* Stile per la riga di una condizione dentro un IF */
+.condition-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  margin-bottom: 8px;
+}
+.condition-row .form-input,
+.condition-row select {
+  margin-top: 0;
+  flex: 1;
+}
+
+.action-view .add-button-wrapper {
+  padding-left: 20px;
+  margin-top: 10px;
+}
+
+.action-view > .add-button-wrapper:first-child:not(:last-child) {
+  display: none;
+}
+
+/* --- STYLES FOR EDITOR WARNING & DISABLED STATE --- */
+.editor-warning {
+    background-color: #fff3cd;
+    color: #856404; 
+    border: 1px solid #ffeeba;
+    border-radius: var(--border-radius);
+    padding: 15px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.editor-warning p {
+    margin: 0 0 10px 0;
+}
+
+fieldset:disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}

@@ -1,0 +1,2 @@
+=== POSSIBILI BUG ===
+- Il controllo del cambio di valore di un field deve essere inserito anche nell'agreement
