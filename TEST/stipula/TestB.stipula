@@ -1,4 +1,4 @@
-stipula Test11 {
+stipula TestB {
     fields x
     agreement(A,B,C){
 		A: x
