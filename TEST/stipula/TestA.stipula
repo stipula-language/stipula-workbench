@@ -1,4 +1,4 @@
-stipula Test10 {
+stipula TestA {
   assets wallet, house
   fields cost, deadline
   agreement (A, B) {
