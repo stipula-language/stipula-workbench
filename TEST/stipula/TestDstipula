@@ -1,4 +1,4 @@
-stipula Test13 {
+stipula TestD {
 	fields t1, t2
 	
 	agreement(A){ 
