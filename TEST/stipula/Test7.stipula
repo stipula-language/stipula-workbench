@@ -5,7 +5,7 @@ stipula Test7 {
 		A: x
 	} => @Q0
 
-	@Q0 A: f(y)[k] (true) {
+	@Q0 A: f(y)[k] {
 		now >> @Q0 {} => @Q2
 	} => @Q1
 }
