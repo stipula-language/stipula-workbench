@@ -1,5 +1,5 @@
 # Stipula Full-Stack Project 
-This project provides a full-stack environment for generating and analyzing Stipula smart contracts,
+This project provides a full-stack environment for generating and analyzing Stipula legal contracts,
 featuring a React frontend, a Node.js backend server, and a Python
 analyzer.
 
