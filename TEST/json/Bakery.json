@@ -1,16 +1,16 @@
 {
   "cont": {
-    "name": "SPA",
+    "name": "BakerySale",
     "assets": [
       "wallet",
       "property"
     ],
     "fields": [
       "price",
-      "prop",
-      "pretzelMissed"
+      "N",
+      "missedPretzel"
     ],
-    "firstState": "Sign1",
+    "firstState": "Init",
     "parties": [
       "Chris",
       "Eva"
@@ -23,22 +23,22 @@
         ],
         "fields": [
           "price",
-          "prop"
+          "N"
         ]
       }
     ],
     "functions": [
       {
-        "name": "sign",
+        "name": "transfer",
         "fromState": [
-          "Sign1"
+          "Init"
         ],
-        "id": "1e2f3a4b-0001-0001-0001-c1d2e3f4a5b6",
-        "toState": "Sign2",
-        "assets": [],
-        "fields": [
-          "x"
+        "id": "a1b2c3d4-0001-0001-0001-e0f1a2b3c4d5",
+        "toState": "ContInit",
+        "assets": [
+          "p"
         ],
+        "fields": [],
         "caller": [
           "Eva"
         ],
@@ -52,10 +52,10 @@
         ],
         "actions": [
           {
-            "type": "SEND1",
-            "id": "1e2f3a4b-0002-0002-0002-c1d2e3f4a5b6",
-            "par1": "x",
-            "par2": "Chris",
+            "type": "MOVE1",
+            "id": "a1b2c3d4-0002-0002-0002-e0f1a2b3c4d5",
+            "par1": "p",
+            "par2": "property",
             "par3": "",
             "par4": "",
             "conditions": [
@@ -74,33 +74,51 @@
         "HOinput": ""
       },
       {
-        "name": "sign",
+        "name": "pay",
         "fromState": [
-          "Sign2"
+          "ContInit"
         ],
-        "id": "2f3a4b5c-0003-0003-0003-d2e3f4a5b6c7",
-        "toState": "Init",
-        "assets": [],
-        "fields": [
-          "x"
+        "id": "b2c3d4e5-0003-0003-0003-f1a2b3c4d5e0",
+        "toState": "Closing",
+        "assets": [
+          "w"
         ],
+        "fields": [],
         "caller": [
           "Chris"
         ],
         "conditions": [
           {
-            "par1": "true",
-            "par2": "",
-            "par3": "",
+            "par1": "w",
+            "par2": "==",
+            "par3": "price",
             "par4": ""
           }
         ],
         "actions": [
           {
-            "type": "SEND1",
-            "id": "2f3a4b5c-0004-0004-0004-d2e3f4a5b6c7",
-            "par1": "x",
-            "par2": "Eva",
+            "type": "MOVE1",
+            "id": "b2c3d4e5-0004-0004-0004-f1a2b3c4d5e0",
+            "par1": "w",
+            "par2": "wallet",
+            "par3": "",
+            "par4": "",
+            "conditions": [
+              {
+                "par1": "",
+                "par2": "",
+                "par3": "",
+                "par4": ""
+              }
+            ],
+            "ifThen": [],
+            "elseThen": []
+          },
+          {
+            "type": "MOVE1",
+            "id": "b2c3d4e5-0005-0005-0005-f1a2b3c4d5e0",
+            "par1": "property",
+            "par2": "Chris",
             "par3": "",
             "par4": "",
             "conditions": [
@@ -116,10 +134,10 @@
           },
           {
             "type": "WHEN1",
-            "id": "2f3a4b5c-0005-0005-0005-d2e3f4a5b6c7",
-            "par1": "28D",
-            "par2": "Init",
-            "par3": "Fail",
+            "id": "b2c3d4e5-0006-0006-0006-f1a2b3c4d5e0",
+            "par1": "14D",
+            "par2": "Closing",
+            "par3": "End",
             "par4": "",
             "conditions": [
               {
@@ -132,16 +150,35 @@
             "ifThen": [
               {
                 "type": "MOVE1",
-                "id": "2f3a4b5c-0006-0006-0006-d2e3f4a5b6c7",
+                "id": "b2c3d4e5-0006-0006-0006-f1a2b3c4d5e1",
                 "par1": "wallet",
-                "par2": "Chris",
+                "par2": "Eva",
                 "par3": "",
                 "par4": ""
-              },
+              }
+            ],
+            "elseThen": []
+          },
+          {
+            "type": "WHEN1",
+            "id": "b2c3d4e5-0007-0007-0007-f1a2b3c4d5e0",
+            "par1": "42D",
+            "par2": "Closing",
+            "par3": "End",
+            "par4": "",
+            "conditions": [
+              {
+                "par1": "",
+                "par2": "",
+                "par3": "",
+                "par4": ""
+              }
+            ],
+            "ifThen": [
               {
                 "type": "MOVE1",
-                "id": "2f3a4b5c-0007-0007-0007-d2e3f4a5b6c7",
-                "par1": "property",
+                "id": "b2c3d4e5-0007-0007-0007-f1a2b3c4d5e1",
+                "par1": "wallet",
                 "par2": "Eva",
                 "par3": "",
                 "par4": ""
@@ -154,39 +191,150 @@
         "HOinput": ""
       },
       {
-        "name": "pay",
+        "name": "pretzel_warranty_breach",
         "fromState": [
-          "Init"
+          "Closing"
         ],
-        "id": "3a4b5c6d-0008-0008-0008-e3f4a5b6c7d8",
-        "toState": "Init",
-        "assets": [
-          "w"
+        "id": "c3d4e5f6-0008-0008-0008-01e2f3a4b5c6",
+        "toState": "Breach",
+        "assets": [],
+        "fields": [
+          "x"
         ],
-        "fields": [],
         "caller": [
           "Chris"
         ],
         "conditions": [
           {
-            "par1": "property",
+            "par1": "x",
             "par2": "<",
-            "par3": "prop",
-            "par4": "&&"
-          },
-          {
-            "par1": "w",
-            "par2": "==",
-            "par3": "price",
+            "par3": "N",
             "par4": ""
           }
         ],
         "actions": [
           {
+            "type": "SEND1",
+            "id": "c3d4e5f6-0009-0009-0009-01e2f3a4b5c6",
+            "par1": "x",
+            "par2": "Eva",
+            "par3": "",
+            "par4": "",
+            "conditions": [
+              {
+                "par1": "",
+                "par2": "",
+                "par3": "",
+                "par4": ""
+              }
+            ],
+            "ifThen": [],
+            "elseThen": []
+          },
+          {
+            "type": "SEND1",
+            "id": "c3d4e5f6-0010-0010-0010-01e2f3a4b5c6",
+            "par1": "(N - x)",
+            "par2": "missedPretzel",
+            "par3": "",
+            "par4": "",
+            "conditions": [
+              {
+                "par1": "",
+                "par2": "",
+                "par3": "",
+                "par4": ""
+              }
+            ],
+            "ifThen": [],
+            "elseThen": []
+          },
+          {
+            "type": "WHEN1",
+            "id": "c3d4e5f6-0011-0011-0011-01e2f3a4b5c6",
+            "par1": "28D",
+            "par2": "Breach",
+            "par3": "Refund",
+            "par4": "",
+            "conditions": [
+              {
+                "par1": "",
+                "par2": "",
+                "par3": "",
+                "par4": ""
+              }
+            ],
+            "ifThen": [],
+            "elseThen": []
+          },
+          {
+            "type": "WHEN1",
+            "id": "c3d4e5f6-0012-0012-0012-01e2f3a4b5c6",
+            "par1": "42D",
+            "par2": "Refund",
+            "par3": "Fail",
+            "par4": "",
+            "conditions": [
+              {
+                "par1": "",
+                "par2": "",
+                "par3": "",
+                "par4": ""
+              }
+            ],
+            "ifThen": [],
+            "elseThen": []
+          }
+        ],
+        "isHO": false,
+        "HOinput": ""
+      },
+      {
+        "name": "repair",
+        "fromState": [
+          "Breach"
+        ],
+        "id": "d4e5f6g7-0013-0013-0013-12f3a4b5c6d0",
+        "toState": "End",
+        "assets": [],
+        "fields": [
+          "x"
+        ],
+        "caller": [
+          "Eva"
+        ],
+        "conditions": [
+          {
+            "par1": "x",
+            "par2": "==",
+            "par3": "missedPretzel",
+            "par4": ""
+          }
+        ],
+        "actions": [
+          {
+            "type": "SEND1",
+            "id": "d4e5f6g7-0014-0014-0014-12f3a4b5c6d0",
+            "par1": "x",
+            "par2": "Chris",
+            "par3": "",
+            "par4": "",
+            "conditions": [
+              {
+                "par1": "",
+                "par2": "",
+                "par3": "",
+                "par4": ""
+              }
+            ],
+            "ifThen": [],
+            "elseThen": []
+          },
+          {
             "type": "MOVE1",
-            "id": "3a4b5c6d-0009-0009-0009-e3f4a5b6c7d8",
-            "par1": "m",
-            "par2": "wallet",
+            "id": "d4e5f6g7-0015-0015-0015-12f3a4b5c6d0",
+            "par1": "wallet",
+            "par2": "Eva",
             "par3": "",
             "par4": "",
             "conditions": [
@@ -205,214 +353,67 @@
         "HOinput": ""
       },
       {
-        "name": "transfer",
+        "name": "refund",
         "fromState": [
-          "Init"
+          "Refund"
         ],
-        "id": "6d7e8f90-0018-0018-0018-b6c7d8e9f0a1",
-        "toState": "Closing",
-        "assets": [
-          "p"
-        ],
+        "id": "e5f6g7h8-0016-0016-0016-23g4a5b6c7e1",
+        "toState": "End",
+        "assets": [],
         "fields": [],
         "caller": [
           "Eva"
         ],
         "conditions": [
           {
-            "par1": "wallet",
-            "par2": "==",
-            "par3": "price",
-            "par4": "&&"
-          },
-          {
-            "par1": "p",
-            "par2": "==",
-            "par3": "property",
+            "par1": "true",
+            "par2": "",
+            "par3": "",
             "par4": ""
           }
         ],
         "actions": [
           {
             "type": "MOVE1",
-            "id": "6d7e8f90-0019-0019-0019-b6c7d8e9f0a1",
-            "par1": "p",
-            "par2": "property",
-            "par3": "",
-            "par4": ""
-          },
-          {
-            "type": "MOVE1",
-            "id": "6d7e8f90-0020-0020-0020-b6c7d8e9f0a1",
-            "par1": "property",
+            "id": "e5f6g7h8-0017-0017-0017-23g4a5b6c7e1",
+            "par1": "(wallet * 0.2)",
             "par2": "Chris",
             "par3": "",
-            "par4": ""
+            "par4": "",
+            "conditions": [
+              {
+                "par1": "",
+                "par2": "",
+                "par3": "",
+                "par4": ""
+              }
+            ],
+            "ifThen": [],
+            "elseThen": []
           },
           {
             "type": "MOVE1",
-            "id": "6d7e8f90-0021-0021-0021-b6c7d8e9f0a1",
+            "id": "e5f6g7h8-0018-0018-0018-23g4a5b6c7e1",
             "par1": "wallet",
             "par2": "Eva",
             "par3": "",
-            "par4": ""
-          }
-        ],
-        "isHO": false,
-        "HOinput": ""
-      },
-      {
-        "name": "pretzel_warranty_breach",
-        "fromState": [
-          "Closing"
-        ],
-        "id": "7e8f90a1-0024-0024-0024-c7d8e9f0a1b2",
-        "toState": "Breach",
-        "assets": [],
-        "fields": [
-          "x"
-        ],
-        "caller": [
-          "Chris"
-        ],
-        "conditions": [
-          {
-            "par1": "true",
-            "par2": "",
-            "par3": "",
-            "par4": ""
-          }
-        ],
-        "actions": [
-          {
-              "type": "SEND1",
-              "id": "2f3a4b5c-0004-0004-0004-d2e3f4a5b6c7",
-              "par1": "x",
-              "par2": "Eva",
-              "par3": "",
-              "par4": "",
-              "conditions": [
-                  {
-                      "par1": "",
-                      "par2": "",
-                      "par3": "",
-                      "par4": ""
-                  }
-              ],
-              "ifThen": [],
-              "elseThen": []
-          },
-          {
-              "type": "WHEN1",
-              "id": "2f3a4b5c-0005-0005-0005-d2e3f4a5b6c7",
-              "par1": "28D",
-              "par2": "Init",
-              "par3": "Fail",
-              "par4": "",
-              "conditions": [
-                  {
-                      "par1": "",
-                      "par2": "",
-                      "par3": "",
-                      "par4": ""
-                  }
-              ],
-              "ifThen": [
-                  {
-                      "type": "MOVE1",
-                      "id": "2f3a4b5c-0006-0006-0006-d2e3f4a5b6c7",
-                      "par1": "wallet",
-                      "par2": "Chris",
-                      "par3": "",
-                      "par4": ""
-                  },
-                  {
-                      "type": "MOVE1",
-                      "id": "2f3a4b5c-0007-0007-0007-d2e3f4a5b6c7",
-                      "par1": "property",
-                      "par2": "Eva",
-                      "par3": "",
-                      "par4": ""
-                  }
-              ],
-              "elseThen": []
-          }
-      ],
-        "isHO": false,
-        "HOinput": ""
-      },
-      {
-        "name": "repair",
-        "fromState": [
-          "Breach"
-        ],
-        "id": "8f90a1b2-0029-0029-0029-d8e9f0a1b2c3",
-        "toState": "End",
-        "assets": [],
-        "fields": [
-          "x"
-        ],
-        "caller": [
-          "Eva"
-        ],
-        "conditions": [
-          {
-            "par1": "true",
-            "par2": "",
-            "par3": "",
-            "par4": ""
-          }
-        ],
-        "actions": [
-          {
-            "type": "SEND1",
-            "id": "8f90a1b2-0030-0030-0030-d8e9f0a1b2c3",
-            "par1": "x",
-            "par2": "Chris",
-            "par3": "",
-            "par4": ""
-          }
-        ],
-        "isHO": false,
-        "HOinput": ""
-      },
-      {
-        "name": "refund",
-        "fromState": [
-          "Refund"
-        ],
-        "id": "90a1b2c3-0031-0031-0031-e9f0a1b2c3d4",
-        "toState": "End",
-        "assets": [
-          "w"
-        ],
-        "fields": [
-          "x"
-        ],
-        "caller": [
-          "Eva"
-        ],
-        "conditions": [
-          {
-            "par1": "w",
-            "par2": "==",
-            "par3": "10",
-            "par4": ""
-          }
-        ],
-        "actions": [
-          {
-            "type": "MOVE1",
-            "id": "90a1b2c3-0032-0032-0032-e9f0a1b2c3d4",
-            "par1": "w",
-            "par2": "Chris",
-            "par3": "",
-            "par4": ""
+            "par4": "",
+            "conditions": [
+              {
+                "par1": "",
+                "par2": "",
+                "par3": "",
+                "par4": ""
+              }
+            ],
+            "ifThen": [],
+            "elseThen": []
           }
         ],
         "isHO": false,
         "HOinput": ""
       }
-    ]
+    ],
+    "HOinputs": []
   }
 }

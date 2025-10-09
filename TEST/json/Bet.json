@@ -26,13 +26,23 @@
             "type": "MOVE1",
             "id": "a2b3c4d5-f6e7-8901-2345-67890abcdef1",
             "par1": "h",
-            "par2": "wallet1"
+            "par2": "wallet1",
+            "par3": "",
+            "par4": "",
+            "conditions": [{ "par1": "", "par2": "", "par3": "", "par4": "" }],
+            "ifThen": [],
+            "elseThen": []
           },
           {
             "type": "SEND1",
             "id": "a3b4c5d6-e7f8-9012-3456-7890abcdef12",
             "par1": "x",
-            "par2": "val1"
+            "par2": "val1",
+            "par3": "",
+            "par4": "",
+            "conditions": [{ "par1": "", "par2": "", "par3": "", "par4": "" }],
+            "ifThen": [],
+            "elseThen": []
           },
           {
             "type": "WHEN1",
@@ -40,16 +50,26 @@
             "par1": "t_before",
             "par2": "First",
             "par3": "Fail",
+            "par4": "",
+            "conditions": [{ "par1": "", "par2": "", "par3": "", "par4": "" }],
             "ifThen": [
               {
                 "type": "MOVE1",
                 "id": "a5b6c7d8-e9f0-1234-5678-90abcdef1234",
                 "par1": "wallet1",
-                "par2": "Better1"
+                "par2": "Better1",
+                "par3": "",
+                "par4": "",
+                "conditions": [{ "par1": "", "par2": "", "par3": "", "par4": "" }],
+                "ifThen": [],
+                "elseThen": []
               }
-            ]
+            ],
+            "elseThen": []
           }
-        ]
+        ],
+        "isHO": false,
+        "HOinput": ""
       },
       {
         "name": "place_bet",
@@ -65,13 +85,23 @@
                 "type": "MOVE1",
                 "id": "b2c3d4e5-a6b7-c8d9-e0f1-a2b3c4d5e6f7",
                 "par1": "h",
-                "par2": "wallet2"
+                "par2": "wallet2",
+                "par3": "",
+                "par4": "",
+                "conditions": [{"par1": "", "par2": "", "par3": "", "par4": ""}],
+                "ifThen": [],
+                "elseThen": []
             },
             {
                 "type": "SEND1",
                 "id": "b3c4d5e6-b7c8-d9e0-f1a2-b3c4d5e6f7a8",
                 "par1": "x",
-                "par2": "val2"
+                "par2": "val2",
+                "par3": "",
+                "par4": "",
+                "conditions": [{"par1": "", "par2": "", "par3": "", "par4": ""}],
+                "ifThen": [],
+                "elseThen": []
             },
             {
                 "type": "WHEN1",
@@ -79,22 +109,37 @@
                 "par1": "t_after",
                 "par2": "Run",
                 "par3": "Fail",
+                "par4": "",
+                "conditions": [{"par1": "", "par2": "", "par3": "", "par4": ""}],
                 "ifThen": [
                     {
                         "type": "MOVE1",
                         "id": "b5c6d7e8-d9e0-f1a2-b3c4-d5e6f7a8b9c0",
                         "par1": "wallet1",
-                        "par2": "Better1"
+                        "par2": "Better1",
+                        "par3": "",
+                        "par4": "",
+                        "conditions": [{"par1": "", "par2": "", "par3": "", "par4": ""}],
+                        "ifThen": [],
+                        "elseThen": []
                     },
                     {
                         "type": "MOVE1",
                         "id": "b6c7d8e9-e0f1-a2b3-c4d5-e6f7a8b9c0d1",
                         "par1": "wallet2",
-                        "par2": "Better2"
+                        "par2": "Better2",
+                        "par3": "",
+                        "par4": "",
+                        "conditions": [{"par1": "", "par2": "", "par3": "", "par4": ""}],
+                        "ifThen": [],
+                        "elseThen": []
                     }
-                ]
+                ],
+                "elseThen": []
             }
-        ]
+        ],
+        "isHO": false,
+        "HOinput": ""
       },
       {
         "name": "data",
@@ -109,6 +154,10 @@
           {
             "type": "IF",
             "id": "d1e2f3a4-b5c6-d7e8-f9a0-b1c2d3e4f5a6",
+            "par1": "",
+            "par2": "",
+            "par3": "",
+            "par4": "",
             "conditions": [
               { "par1": "z", "par2": "==", "par3": "val1", "par4": "&&" },
               { "par1": "z", "par2": "==", "par3": "val2", "par4": "" }
@@ -150,8 +199,11 @@
               }
             ]
           }
-        ]
+        ],
+        "isHO": false,
+        "HOinput": ""
       }
-    ]
+    ],
+    "HOinputs": []
   }
 }

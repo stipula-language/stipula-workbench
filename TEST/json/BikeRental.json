@@ -1,0 +1,229 @@
+{
+  "cont": {
+    "name": "BikeRental",
+    "assets": [
+      "wallet",
+      "bike"
+    ],
+    "fields": [
+      "cost",
+      "k"
+    ],
+    "firstState": "Inactive",
+    "parties": [
+      "Lender",
+      "Borrower"
+    ],
+    "agreements": [
+      {
+        "parties": [
+          "Lender",
+          "Borrower"
+        ],
+        "fields": [
+          "cost",
+          "k"
+        ]
+      }
+    ],
+    "functions": [
+      {
+        "name": "offer",
+        "fromState": [
+          "Inactive"
+        ],
+        "id": "e1f2a3b4-c5d6-e7f8-a9b0-c1d2e3f4a5b6",
+        "toState": "Payment",
+        "assets": [
+          "b"
+        ],
+        "fields": [],
+        "caller": [
+          "Lender"
+        ],
+        "conditions": [
+          {
+            "par1": "true",
+            "par2": "",
+            "par3": "",
+            "par4": ""
+          }
+        ],
+        "actions": [
+          {
+            "type": "MOVE1",
+            "id": "f1a2b3c4-d5e6-f7a8-b9c0-d1e2f3a4b5c6",
+            "par1": "b",
+            "par2": "bike",
+            "par3": "",
+            "par4": "",
+            "conditions": [
+              {
+                "par1": "",
+                "par2": "",
+                "par3": "",
+                "par4": ""
+              }
+            ],
+            "ifThen": [],
+            "elseThen": []
+          }
+        ],
+        "isHO": false,
+        "HOinput": ""
+      },
+      {
+        "name": "pay",
+        "fromState": [
+          "Payment"
+        ],
+        "id": "a2b3c4d5-e6f7-8901-2345-67890abcdef1",
+        "toState": "Using",
+        "assets": [
+          "x"
+        ],
+        "fields": [],
+        "caller": [
+          "Borrower"
+        ],
+        "conditions": [
+          {
+            "par1": "true",
+            "par2": "",
+            "par3": "",
+            "par4": ""
+          }
+        ],
+        "actions": [
+          {
+            "type": "MOVE1",
+            "id": "b3c4d5e6-f7e8-9012-3456-7890abcdef12",
+            "par1": "x",
+            "par2": "wallet",
+            "par3": "",
+            "par4": "",
+            "conditions": [
+              {
+                "par1": "",
+                "par2": "",
+                "par3": "",
+                "par4": ""
+              }
+            ],
+            "ifThen": [],
+            "elseThen": []
+          },
+          {
+            "type": "MOVE1",
+            "id": "c4d5e6f7-e8f9-0123-4567-890abcdef123",
+            "par1": "bike",
+            "par2": "Borrower",
+            "par3": "",
+            "par4": "",
+            "conditions": [
+              {
+                "par1": "",
+                "par2": "",
+                "par3": "",
+                "par4": ""
+              }
+            ],
+            "ifThen": [],
+            "elseThen": []
+          },
+          {
+            "type": "WHEN1",
+            "id": "d5e6f7a8-f9e0-1234-5678-90abcdef1234",
+            "par1": "k",
+            "par2": "Using",
+            "par3": "End",
+            "par4": "",
+            "conditions": [
+              {
+                "par1": "",
+                "par2": "",
+                "par3": "",
+                "par4": ""
+              }
+            ],
+            "ifThen": [
+              {
+                "type": "MOVE1",
+                "id": "e6f7a8b9-f0e1-2345-6789-0abcdef12345",
+                "par1": "wallet",
+                "par2": "Lender",
+                "par3": "",
+                "par4": ""
+              }
+            ],
+            "elseThen": []
+          }
+        ],
+        "isHO": false,
+        "HOinput": ""
+      },
+      {
+        "name": "end",
+        "fromState": [
+          "Using"
+        ],
+        "id": "f7a8b9c0-e1f2-3456-7890-abcdef123456",
+        "toState": "End",
+        "assets": [],
+        "fields": [],
+        "caller": [
+          "Borrower"
+        ],
+        "conditions": [
+          {
+            "par1": "true",
+            "par2": "",
+            "par3": "",
+            "par4": ""
+          }
+        ],
+        "actions": [
+          {
+            "type": "MOVE1",
+            "id": "a8b9c0d1-f2e3-4567-890a-bcdef1234567",
+            "par1": "(0.5*wallet)",
+            "par2": "Lender",
+            "par3": "",
+            "par4": "",
+            "conditions": [
+              {
+                "par1": "",
+                "par2": "",
+                "par3": "",
+                "par4": ""
+              }
+            ],
+            "ifThen": [],
+            "elseThen": []
+          },
+          {
+            "type": "MOVE1",
+            "id": "b9c0d1e2-f3e4-5678-90ab-cdef12345678",
+            "par1": "wallet",
+            "par2": "Borrower",
+            "par3": "",
+            "par4": "",
+            "conditions": [
+              {
+                "par1": "",
+                "par2": "",
+                "par3": "",
+                "par4": ""
+              }
+            ],
+            "ifThen": [],
+            "elseThen": []
+          }
+        ],
+        "isHO": false,
+        "HOinput": ""
+      }
+    ],
+    "HOinputs": []
+  }
+}

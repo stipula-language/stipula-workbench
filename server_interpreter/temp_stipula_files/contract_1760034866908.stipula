@@ -1,0 +1,41 @@
+stipula BakerySale {
+  assets wallet, property
+  fields price, N, missedPretzel
+  agreement (Chris, Eva) {
+    Chris, Eva : price, N
+  } => @Init
+
+  @Init Eva : transfer()[p](true){
+    p -o property
+  } => @ContInit
+
+  @ContInit Chris : pay()[w](w==price){
+    w -o wallet
+    property -o Chris
+    now + now + 14D >> @Closing {
+        wallet -o Eva
+    } => @End
+    now + now + 42D >> @Closing {
+        wallet -o Eva
+    } => @End
+  } => @Closing
+
+  @Closing Chris : pretzel_warranty_breach(x)[](x<N){
+    x -> Eva
+    (N - x) -> missedPretzel
+    now + now + 28D >> @Breach {
+    } => @Refund
+    now + now + 42D >> @Refund {
+    } => @Fail
+  } => @Breach
+
+  @Breach Eva : repair(x)[](x==missedPretzel){
+    x -> Chris
+    wallet -o Eva
+  } => @End
+
+  @Refund Eva : refund()[](true){
+    (wallet * 0.2) -o Chris
+    wallet -o Eva
+  } => @End
+}

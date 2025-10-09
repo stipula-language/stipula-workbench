@@ -173,7 +173,7 @@ export function getCode(contract) {
   var fields = "fields " + contract.fields.join(", ");
 
   var agreement = "agreement (" + contract.parties.join(", ");
-  agreement += ")(" + contract.fields.join(", ") + ") {\n" ;
+  agreement += ") {\n" ;
   contract.agreements.map((ag) => {
     agreement += tab + tab + ag.parties.join(", ") + " : " + ag.fields.join(", ") + "\n";
   });
