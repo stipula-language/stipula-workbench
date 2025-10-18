@@ -182,8 +182,6 @@ function ActionView(props) {
                     <span className="action-connector">
                       If the following conditions are met:
                     </span>
-                    {/* Qui potresti inserire condition-row */}
-
                     <div className="action-nested-container">
                       <label>Then:</label>
                       <ActionsList

@@ -3,25 +3,22 @@ import { ActionsList } from "./ActionView";
 import { cleanStr } from "./Contract";
 
 function FunctionEditor({
-  functionData, // Questo è l'oggetto wrapper { data, isNew, index? }
+  functionData, 
   onSave,
   onClose,
   parties,
   HOinputs,
 }) {
   const [currentFunction, setCurrentFunction] = useState(functionData.data);
-  
-  // Stati per i campi di input dei form interni
+
   const [inputField, setInputField] = useState("");
   const [inputAsset, setInputAsset] = useState("");
   const [fromState, setFromState] = useState("");
 
-  // Hook corretto per sincronizzare lo stato se si apre un'altra funzione
   useEffect(() => {
     setCurrentFunction(functionData.data);
   }, [functionData.data]);
 
-  // Le seguenti funzioni ora funzionano correttamente perché 'currentFunction' ha la forma giusta
   const handleChange = (key, value) => {
     setCurrentFunction((prev) => ({ ...prev, [key]: value }));
   };

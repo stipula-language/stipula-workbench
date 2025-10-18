@@ -484,14 +484,14 @@ function ContractView(props) {
                         onClick={() => handleAnalyze(true)} 
                         disabled={isAnalyzing}
                       >
-                        {isAnalyzing && analysisType === 'short' ? "Analyzing..." : "Unreachability Analyzer "}
+                        {isAnalyzing && analysisType === 'short' ? "Analyzing..." : "Unreached Clauses"}
                       </button>
                        <button 
                         className="btn-analyze" 
                         onClick={() => handleAnalyze(false)} 
                         disabled={isAnalyzing}
                       >
-                        {isAnalyzing && analysisType === 'verbose' ? "Analyzing..." : "Unreachability Analyzer (verbose output)"}
+                        {isAnalyzing && analysisType === 'verbose' ? "Analyzing..." : "Unreached Clauses (verbose output)"}
                       </button>
                     </div>
                   </div>
