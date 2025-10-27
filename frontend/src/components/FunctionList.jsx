@@ -25,7 +25,7 @@ function FunctionList({ functions, onAddNew, onEdit, onDelete }) {
               </li>
             ))
           ) : (
-            <p className="empty-list-message">No functions defined yet.</p>
+            <li className="empty-list-message">No functions defined yet.</li>
           )}
         </ul>
         <button onClick={onAddNew} className="btn btn-primary" style={{ width: '100%', marginTop: '20px' }}>

@@ -2,7 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&display=swap');
 
 :root {
-  --primary-color: #007bff;
+  --primary-color: #0073e6;
   --primary-hover: #0056b3;
   --danger-color: #dc3545;
   --danger-hover: #c82333;
@@ -172,6 +172,7 @@ body {
   margin-bottom: 20px;
   margin-top: 20px;
   background-color: var(--primary-color);
+  color: white; 
   padding-left: 10px;
   line-height: 1.2;
   padding-bottom: 10px;
@@ -683,11 +684,11 @@ li {
 }
 
 .btn-run {
-  background: #4caf50;
+  background: #2E7D32; 
   color: white;
 }
 .btn-run:hover:not(:disabled) {
-  background: #45a049;
+  background: #1B5E20; 
 }
 .btn-run.running {
   background: #2e7d32;
@@ -702,11 +703,11 @@ li {
 }
 
 .btn-send {
-  background: #008cba;
+  background: #0077a7; /* Scurito per contrasto */
   color: white;
 }
 .btn-send:hover:not(:disabled) {
-  background: #0077a7;
+  background: #006080; /* Scurito per contrasto */
 }
 
 
@@ -819,11 +820,11 @@ li {
 }
 
 .btn-analyze {
-  background: #008cba;
+  background: #0077a7; /* Scurito per contrasto */
   color: white;
 }
 .btn-analyze:hover:not(:disabled) {
-  background: #0077a7;
+  background: #006080; /* Scurito per contrasto */
 }
 .btn-analyze:disabled {
   background: #555;

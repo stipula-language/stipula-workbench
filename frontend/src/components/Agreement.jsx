@@ -40,16 +40,17 @@ function Agreement(props) {
       <div className="container-agreements">
         {props.agreements.map((ag, i) => {
           return (
-            <div className="agreement-row">
+            <div className="agreement-row" key={i}>
               <div className="list-box">
-                <label htmlFor="fields-agreeds">Fields to be agreed</label>
-                <ul id="fields-agreeds">
-                  {ag.fields.map((element) => {
+                <strong>Fields to be agreed</strong>
+                <ul>
+                  {ag.fields.map((element, elIndex) => {
                     return (
-                      <li>
+                      <li key={elIndex}>
                         <button
                           className="delete-list-el"
                           onClick={() => handleDeleteFieldAgr(element, i)}
+                          aria-label={`Remove field ${element}`}
                         ></button>
                         {element}
                       </li>
@@ -58,31 +59,32 @@ function Agreement(props) {
                 </ul>
                 <form>
                   <select
-                    type="text"
                     onChange={(e) => {
                       handleAddFieldAgr(e.target.value, i);
                     }}
                     value={empty}
+                    aria-label="Add field to agreement"
                   >
-                    <option value="" selected disabled hidden>
+                    <option value="" disabled hidden>
                       Select...
                     </option>
-                    {props.fields.map((element) => {
-                      return <option value={element}>{element}</option>;
+                    {props.fields.map((element, elIndex) => {
+                      return <option key={elIndex} value={element}>{element}</option>;
                     })}
                   </select>
                 </form>
               </div>
               <label>agreed with</label>
               <div className="list-box">
-                <label htmlFor="parties-agreeds">Parties that agree</label>
-                <ul id="parties-agreeds">
-                  {ag.parties.map((element) => {
+                <strong>Parties that agree</strong>
+                <ul>
+                  {ag.parties.map((element, elIndex) => {
                     return (
-                      <li>
+                      <li key={elIndex}>
                         <button
                           className="delete-list-el"
                           onClick={() => handleDeletePartyAgr(element, i)}
+                          aria-label={`Remove party ${element}`}
                         ></button>
                         {element}
                       </li>
@@ -91,17 +93,17 @@ function Agreement(props) {
                 </ul>
                 <form>
                   <select
-                    type="text"
                     onChange={(e) => {
                       handleAddPartyAgr(e.target.value, i);
                     }}
                     value={empty}
+                    aria-label="Add party to agreement"
                   >
-                    <option value="" selected disabled hidden>
+                    <option value="" disabled hidden>
                       Select...
                     </option>
-                    {props.parties.map((element) => {
-                      return <option value={element}>{element}</option>;
+                    {props.parties.map((element, elIndex) => {
+                      return <option key={elIndex} value={element}>{element}</option>;
                     })}
                   </select>
                 </form>
@@ -113,6 +115,7 @@ function Agreement(props) {
                   tmp.splice(i, 1);
                   props.setAgreements(tmp);
                 }}
+                aria-label={`Remove agreement ${i + 1}`}
               ></button>
             </div>
           );
@@ -125,6 +128,7 @@ function Agreement(props) {
               { fields: [], parties: [] },
             ])
           }
+          aria-label="Add new agreement"
         ></button>
       </div>
       <div className="grid-state">

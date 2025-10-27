@@ -60,7 +60,6 @@ function FunctionEditor({
       <div className="modal-content form-card">
         <div className="modal-header">
           <h3>
-            {/* Ora usiamo 'functionData.isNew' per la condizione e 'currentFunction.name' per il titolo */}
             {functionData.isNew
               ? "Create New Function"
               : `Edit Function: ${currentFunction.name || "Untitled"}`}
