@@ -16,7 +16,11 @@ function FunctionEditor({
   const [fromState, setFromState] = useState("");
 
   useEffect(() => {
-    setCurrentFunction(functionData.data);
+    const data = { ...functionData.data };
+    if (!data.conditions || data.conditions.length === 0) {
+        data.conditions = [{ par1: "", par2: "", par3: "", par4: "" }];
+    }
+    setCurrentFunction(data);
   }, [functionData.data]);
 
   const handleChange = (key, value) => {
@@ -53,6 +57,30 @@ function FunctionEditor({
       ...prev,
       [listName]: prev[listName].filter((item) => item !== itemToDelete),
     }));
+  };
+
+  const handleConditionChange = (index, field, value) => {
+    let newConditions = [...(currentFunction.conditions || [])];
+    
+    if (newConditions.length === 0) {
+        newConditions = [{ par1: "", par2: "", par3: "", par4: "" }];
+    }
+
+    if (field === 'par4') {
+        if (value === "") {
+            newConditions = newConditions.slice(0, index + 1);
+            newConditions[index] = { ...newConditions[index], [field]: value };
+        } else if (index === newConditions.length - 1) {
+            newConditions[index] = { ...newConditions[index], [field]: value };
+            newConditions.push({ par1: "", par2: "", par3: "", par4: "" });
+        } else {
+            newConditions[index] = { ...newConditions[index], [field]: value };
+        }
+    } else {
+        newConditions[index] = { ...newConditions[index], [field]: value };
+    }
+
+    setCurrentFunction((prev) => ({ ...prev, conditions: newConditions }));
   };
 
   return (
@@ -186,6 +214,56 @@ function FunctionEditor({
             
            {!currentFunction.isHO && (
             <>
+              <div className="form-group list-box" style={{marginTop: '20px', width: '100%'}}>
+                  <label>Guards (Conditions):</label>
+                  <ul style={{listStyle: 'none', padding: 0, width: '100%'}}>
+                    {(currentFunction.conditions || [{ par1: "", par2: "", par3: "", par4: "" }]).map((cond, i) => (
+                        <li key={i} style={{ display: 'flex', gap: '10px', marginBottom: '10px', alignItems: 'center' }}>
+                            <input 
+                                type="text" 
+                                className="form-input" 
+                                style={{flex: 1}}
+                                value={cond.par1} 
+                                onChange={(e) => handleConditionChange(i, 'par1', e.target.value)} 
+                                placeholder="Left operand"
+                            />
+                            <select 
+                                className="form-input" 
+                                style={{width: 'auto'}}
+                                value={cond.par2} 
+                                onChange={(e) => handleConditionChange(i, 'par2', e.target.value)}
+                            >
+                                <option value="">Op</option>
+                                <option value="==">==</option>
+                                <option value="<">&lt;</option>
+                                <option value="<=">&le;</option>
+                                <option value=">=">&ge;</option>
+                                <option value=">">&gt;</option>
+                                <option value="!=">!=</option>
+                            </select>
+                            <input 
+                                type="text" 
+                                className="form-input" 
+                                style={{flex: 1}}
+                                value={cond.par3} 
+                                onChange={(e) => handleConditionChange(i, 'par3', e.target.value)} 
+                                placeholder="Right operand"
+                            />
+                            <select 
+                                className="form-input" 
+                                style={{width: 'auto'}}
+                                value={cond.par4} 
+                                onChange={(e) => handleConditionChange(i, 'par4', e.target.value)}
+                            >
+                                <option value="">End</option>
+                                <option value="&&">AND</option>
+                                <option value="||">OR</option>
+                            </select>
+                        </li>
+                    ))}
+                  </ul>
+              </div>
+
               <div className="form-group" style={{marginTop: '20px'}}>
                   <label htmlFor="function-to-state">To state:</label>
                    <input
