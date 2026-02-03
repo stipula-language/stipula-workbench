@@ -7,16 +7,26 @@
     "install:backend": "npm install --prefix ./backend",
     "install:frontend": "npm install --prefix ./frontend",
     "install:interpreter": "npm install --prefix ./server_interpreter",
+
     "setup:analyzer-venv": "python3 -m venv ./analyzer/venv",
     "install:analyzer": "./analyzer/venv/bin/pip install -r ./analyzer/requirements.txt",
+
+    "setup:liquidity-analyzer-venv": "python3 -m venv ./liquidity-analyzer/venv",
+    "install:liquidity-analyzer": "./liquidity-analyzer/venv/bin/pip install -r ./liquidity-analyzer/requirements.txt",
+
     "install:all-node": "npm run install:backend && npm run install:frontend && npm run install:interpreter",
-    "install:all-python": "rm -rf ./analyzer/venv && npm run setup:analyzer-venv && npm run install:analyzer",
+
+    "install:all-python": "rm -rf ./analyzer/venv && npm run setup:analyzer-venv && npm run install:analyzer && rm -rf ./liquidity-analyzer/venv && npm run setup:liquidity-analyzer-venv && npm run install:liquidity-analyzer",
+
     "install:all": "npm run install:all-node && npm run install:all-python",
+
     "start:backend": "node backend/server.js",
     "start:frontend": "npm start --prefix ./frontend",
     "start:interpreter": "node server_interpreter/interpreter_server.js",
+
     "dev": "concurrently \"npm run start:backend\" \"npm run start:interpreter\" \"npm run start:frontend\"",
-    "start": "npm run install:all && npm run dev"
+    "install": "npm run install:all",
+    "start": "npm run dev"
   },
   "keywords": [
     "stipula",
