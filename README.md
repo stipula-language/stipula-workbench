@@ -12,6 +12,14 @@ installed on your system:
 Getting Started Follow these steps to set up and launch the entire
 application stack.
 
+### Step 0: Download the Project
+
+Run the following command.
+
+``` bash
+git clone --recurse-submodules https://github.com/stipula-language/stipula-workbench.git
+```
+
 ### Step 1: Initial Setup and Installation (npm install)
 
 Run the following command from the root directory to install all

@@ -1,0 +1,3 @@
+[submodule "liquidity-analyzer"]
+	path = liquidity-analyzer
+	url = https://github.com/MatteoPanicciari/StipulaLiquidityAnalyzer.git
