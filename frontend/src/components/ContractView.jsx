@@ -123,6 +123,43 @@ function ContractView(props) {
     }
   };
 
+
+  const handleLiquidityAnalyze = async (isVerbose) => {
+    setIsAnalyzing(true);
+    setAnalysisType(isVerbose ? 'liquidity-verbose' : 'liquidity');
+    setAnalysisResult(null);
+    const codeToAnalyze = isCodeEditable ? editedCode : getCode(cont);
+
+    try {
+      const response = await fetch('http://localhost:4000/api/liquidity', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ code: codeToAnalyze, verbose: isVerbose }),
+      });
+      console.log("b2")
+
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Unknown server error.');
+      }
+
+      setAnalysisResult({ type: 'success', data: result.output });
+
+    } catch (error) {
+      console.log("e1")
+      console.error("Error during analysis:", error);
+      setAnalysisResult({ type: 'error', data: error.message });
+    } finally {
+      console.log("e2")
+      setIsAnalyzing(false);
+    }
+      console.log("e3")
+  };
+
   useEffect(() => {
     if (consoleOutputRef.current) {
       consoleOutputRef.current.scrollTop = consoleOutputRef.current.scrollHeight;
@@ -479,19 +516,33 @@ function ContractView(props) {
                       <button className="btn-edit" onClick={handleEditCode} disabled={isCodeEditable}>
                         Edit
                       </button>
-                      <button 
-                        className="btn-analyze-short" 
-                        onClick={() => handleAnalyze(true)} 
+                      <button
+                        className="btn-analyze-short"
+                        onClick={() => handleAnalyze(true)}
                         disabled={isAnalyzing}
                       >
-                        {isAnalyzing && analysisType === 'short' ? "Analyzing..." : "Unreached Clauses"}
+                        {isAnalyzing && analysisType === 'short' ? "Analyzing..." : "Unreachability"}
+                      </button>
+                      <button
+                        className="btn-liquidity-analyze"
+                        onClick={() => handleLiquidityAnalyze(false)}
+                        disabled={isAnalyzing}
+                      >
+                        {isAnalyzing && analysisType === 'liquidity' ? "Analyzing..." : "Liquidity"}
                       </button>
                        <button 
                         className="btn-analyze" 
                         onClick={() => handleAnalyze(false)} 
                         disabled={isAnalyzing}
                       >
-                        {isAnalyzing && analysisType === 'verbose' ? "Analyzing..." : "Unreached Clauses (verbose output)"}
+                        {isAnalyzing && analysisType === 'verbose' ? "Analyzing..." : "Unreachability (verbose)"}
+                      </button>
+                      <button
+                        className="btn-liquidity-analyze-verbose"
+                        onClick={() => handleLiquidityAnalyze(true)}
+                        disabled={isAnalyzing}
+                      >
+                        {isAnalyzing && analysisType === 'liquidity-verbose' ? "Analyzing..." : "Liquidity (verbose)"}
                       </button>
                     </div>
                   </div>

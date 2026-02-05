@@ -819,6 +819,42 @@ li {
   background: #666;
 }
 
+.btn-liquidity-analyze {
+  background: #7b42a9; /* Scurito per contrasto */
+  color: white;
+}
+.btn-liquidity-analyze:hover:not(:disabled) {
+  background: #341c48; /* Scurito per contrasto */
+}
+.btn-liquidity-analyze:disabled {
+  background: #555;
+  cursor: not-allowed;
+}
+
+.btn-liquidity-analyze-verbose {
+  background: #a700a7; /* Scurito per contrasto */
+  color: white;
+}
+.btn-liquidity-analyze-verbose:hover:not(:disabled) {
+  background: #4e004e; /* Scurito per contrasto */
+}
+.btn-liquidity-analyze-verbose:disabled {
+  background: #555;
+  cursor: not-allowed;
+}
+
+.btn-analyze-short {
+  background: #3c00b3; /* Scurito per contrasto */
+  color: white;
+}
+.btn-analyze-short:hover:not(:disabled) {
+  background: #230168; /* Scurito per contrasto */
+}
+.btn-analyze-short:disabled {
+  background: #555;
+  cursor: not-allowed;
+}
+
 .btn-analyze {
   background: #0077a7; /* Scurito per contrasto */
   color: white;

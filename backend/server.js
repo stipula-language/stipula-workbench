@@ -83,6 +83,67 @@ app.post('/api/analyze', async (req, res) => {
   }
 });
 
+app.post('/api/liquidity', async (req, res) => {
+  const { code, verbose } = req.body;
+
+  if (!code) {
+    return res.status(400).json({ error: 'Nessun codice fornito.' });
+  }
+
+  const analyzerDir = path.join(__dirname, '..', 'liquidity-analyzer');
+  const tempFileName = `contract_${Date.now()}.stipula`;
+  const tempFilePath = path.join(analyzerDir, tempFileName);
+  try {
+    await fs.writeFile(tempFilePath, code);
+
+    const venvPythonPath = path.join(analyzerDir, 'venv', 'bin', 'python');
+
+    const args = [
+      path.join(analyzerDir, 'main.py'),
+      tempFilePath
+    ];
+
+    if (verbose) {
+      args.push('--verbose');
+    }
+
+    console.log(`Eseguendo l'analizzatore con gli argomenti: ${args.join(' ')}`);
+
+    const pythonProcess = spawn(venvPythonPath, args);
+
+    let stdoutData = '';
+    let stderrData = '';
+
+    pythonProcess.stdout.on('data', (data) => {
+      stdoutData += data.toString();
+    });
+
+    pythonProcess.stderr.on('data', (data) => {
+      stderrData += data.toString();
+    });
+
+    pythonProcess.on('close', async (code) => {
+      await fs.unlink(tempFilePath);
+
+      if (stderrData) {
+        console.error(`Errore dall'analizzatore: ${stderrData}`);
+        return res.status(500).json({ error: stderrData });
+      }
+
+      res.status(200).json({ output: stdoutData });
+    });
+
+  } catch (error) {
+    console.error('Errore del server:', error);
+    try {
+      await fs.unlink(tempFilePath);
+    } catch (cleanupError) {
+      console.error('Errore nella pulizia del file temporaneo:', cleanupError);
+    }
+    res.status(500).json({ error: 'Errore interno del server.' });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Backend in ascolto sulla porta ${PORT}`);
 });
