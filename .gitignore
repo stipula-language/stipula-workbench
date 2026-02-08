@@ -3,3 +3,5 @@ node_modules
 venv
 .idea
 .antlr
+liquidity-analyzer/TESTS
+liquidity-analyzer/OTHER_TESTS
