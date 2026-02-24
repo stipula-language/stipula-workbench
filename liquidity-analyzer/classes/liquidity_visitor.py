@@ -3,15 +3,25 @@ from generated.StipulaParser import StipulaParser
 
 from classes.data.visitor_entry import FunctionVisitorEntry, EventVisitorEntry
 from classes.data.liquidity_expression import LiqExpr, LiqConst
-from classes.liquidity_analyzer import LiquidityComputer
+from classes.liquidity_analyzer import LiquidityAnalyzer
 
 class LiquidityVisitor(StipulaVisitor):
     def __init__(self, is_verbose):
         StipulaVisitor.__init__(self)
         self.is_verbose = is_verbose
-        self.visitor_output = LiquidityComputer()
+        self.analyzer = LiquidityAnalyzer()
 
         self.parties : list[str] = list()
+
+    def compute_results(self, contract_name: str):
+        print("___________________________________________"
+              "\n|=========================================|"
+              "\n¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯"
+              f"\n{contract_name}")
+        result_liquidity = self.analyzer.compute_results_verbose() if self.is_verbose else self.analyzer.compute_results()
+        print(f"\n{contract_name} is{'' if result_liquidity[0] else ' NOT'} liquid")
+        print(f"has events: {result_liquidity[1]}")
+        print(f"has guards: {result_liquidity[2]}")
 
     def visitStipula(self, ctx: StipulaParser.StipulaContext):
         """
@@ -20,24 +30,14 @@ class LiquidityVisitor(StipulaVisitor):
         """
         if ctx.assetsDecl():
             self.visitAssetsDecl(ctx.assetsDecl())
+        if ctx.fieldsDecl():
+            self.visitFieldsDecl(ctx.fieldsDecl())
         if ctx.agreement():
             self.visitAgreement(ctx.agreement())
         for function_decl_ctx in ctx.functionDecl():
             self.visitFunctionDecl(function_decl_ctx)
 
-        print("___________________________________________"
-              "\n|=========================================|"
-              "\n¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯"
-              f"\n{ctx.ID()}")
-        are_functions_liquid = self.visitor_output.compute_function_local_liquidity()
-        if are_functions_liquid:
-            self.visitor_output.compute_abs_computations()
-            result_liquidity = self.visitor_output.compute_results_verbose() if self.is_verbose else self.visitor_output.compute_results()
-            print(f"\n{ctx.ID()} is{'' if result_liquidity[0] else ' NOT'} liquid")
-            print(f"has events: {result_liquidity[1]}")
-            print(f"has guards: {result_liquidity[2]}")
-        else:
-            print(f"\n{ctx.ID()} is NOT liquid")
+        self.compute_results(ctx.ID())
 
     def visitAssetsDecl(self, ctx:StipulaParser.AssetsDeclContext):
         """
@@ -45,14 +45,21 @@ class LiquidityVisitor(StipulaVisitor):
         i.e. : assets h1, h2
         """
         for a in ctx.assetId:
-            self.visitor_output.add_global_asset(a)
+            self.analyzer.add_global_asset(a)
+
+    def visitFieldsDecl(self, ctx:StipulaParser.FieldsDeclContext):
+        """
+        Visit fields declaration
+        i.e. : fields x1, x2
+        """
+        pass
 
     def visitAgreement(self, ctx:StipulaParser.AgreementContext):
         """
         Visit agreement
         i.e. : agreement(parts) { f } => @Q0
         """
-        self.visitor_output.set_init_state_id(ctx.stateId.text) # set Q0 on visitor_output
+        self.analyzer.set_q0(ctx.stateId.text) # set Q0 on visitor_output
         for party in ctx.ID():
             self.parties.append(party.getText())
 
@@ -65,8 +72,8 @@ class LiquidityVisitor(StipulaVisitor):
         has_guard = bool(ctx.precondition)
         function_visitor_entry = FunctionVisitorEntry(ctx.startStateId.text, ctx.partyId.text,
                                                       ctx.functionId.text, ctx.endStateId.text,
-                                                      self.visitor_output.get_global_asset(), list_of_local_assets, has_guard)
-        self.visitor_output.add_visitor_function(function_visitor_entry, has_guard)   # update C and Lc on visitor_output
+                                                      self.analyzer.get_global_asset(), list_of_local_assets, has_guard)
+        self.analyzer.add_visitor_function(function_visitor_entry, has_guard)   # update C and Lc on visitor_output
 
         # visit function body
         for func_statement_ctx in ctx.functionBody().statement():
@@ -86,50 +93,54 @@ class LiquidityVisitor(StipulaVisitor):
         Visit event declaration
         i.e. : now >> @Q0 { h -o A } => @Q1
         """
-        event_visitor_entry = EventVisitorEntry(ctx.trigger.getText(), ctx.startStateId.text, ctx.endStateId.text, self.visitor_output.get_global_asset())
-        self.visitor_output.add_visitor_event(event_visitor_entry)
+        event_visitor_entry = EventVisitorEntry(ctx.trigger.getText(), ctx.startStateId.text, ctx.endStateId.text, self.analyzer.get_global_asset())
+        self.analyzer.add_visitor_event(event_visitor_entry)
+        for func_statement_ctx in ctx.statement():
+            if func_statement_ctx.ifThenElse():
+                self.visitIfThenElse(func_statement_ctx.ifThenElse(), event_visitor_entry)
+            elif func_statement_ctx.assetOperation():
+                self.visitAssetOperation(func_statement_ctx.assetOperation(), event_visitor_entry)
+            elif func_statement_ctx.fieldOperation():
+                self.visitFieldOperation(func_statement_ctx.fieldOperation())
+            else:
+                print("ERROR visitEventDecl")
         return event_visitor_entry
 
-    def visitIfThenElse(self, ctx: StipulaParser.IfThenElseContext, function_visitor_entry: FunctionVisitorEntry = None) -> dict[str, LiqExpr]:
+    def visitIfThenElse(self, ctx: StipulaParser.IfThenElseContext, visitor_entry: FunctionVisitorEntry | EventVisitorEntry = None) -> dict[str, LiqExpr]:
         if ctx.expression():
-            if self.visitExpression(ctx.expression()) != 'BOOL':
-                # TODO capire se puo assumere anche altri valori
-                print("ERROR visitIfThenElse")
-                return {}
-
             if ctx.functionBody(0):
-                then_environment = self.visitFunctionBody(ctx.functionBody(0), function_visitor_entry)
+                then_environment = self.visitFunctionBody(ctx.functionBody(0), visitor_entry)
                 if ctx.functionBody(1):
-                    else_environment = self.visitFunctionBody(ctx.functionBody(1), function_visitor_entry)
+                    else_environment = self.visitFunctionBody(ctx.functionBody(1), visitor_entry)
                 elif ctx.ifThenElse():
-                    else_environment = self.visitIfThenElse(ctx.ifThenElse(), function_visitor_entry)
+                    else_environment = self.visitIfThenElse(ctx.ifThenElse(), visitor_entry)
                 else:
                     print("ERROR visitIfThenElse")
                     return {}
 
-                for el in function_visitor_entry.get_output_type():
-                    function_visitor_entry.set_field_value(el, LiqExpr(LiqConst.UPPER, then_environment[el], else_environment[el]))
-                return function_visitor_entry.get_env()['end']
+                for el in visitor_entry.get_output_type():
+                    visitor_entry.set_field_value(el, LiqExpr(LiqConst.UPPER, then_environment[el], else_environment[el]))
+                return visitor_entry.get_env()['end']
 
         print("ERROR visitIfThenElse")
         return {}
 
-    def visitFunctionBody(self, ctx: StipulaParser.FunctionBodyContext, function_visitor_entry: FunctionVisitorEntry = None) -> dict[str, LiqExpr]:
-        function_visitor_entry.add_env_level()
+    def visitFunctionBody(self, ctx: StipulaParser.FunctionBodyContext, visitor_entry: FunctionVisitorEntry | EventVisitorEntry = None) -> dict[str, LiqExpr]:
+        visitor_entry.add_env_level()
         for func_statement_ctx in ctx.statement():
             if func_statement_ctx.ifThenElse():
-                self.visitIfThenElse(func_statement_ctx.ifThenElse(), function_visitor_entry)
+                self.visitIfThenElse(func_statement_ctx.ifThenElse(), visitor_entry)
             elif func_statement_ctx.assetOperation():
-                self.visitAssetOperation(func_statement_ctx.assetOperation(), function_visitor_entry)
+                self.visitAssetOperation(func_statement_ctx.assetOperation(), visitor_entry)
             elif func_statement_ctx.fieldOperation():
                 self.visitFieldOperation(func_statement_ctx.fieldOperation())
             else:
                 print("ERROR visitFunctionDecl")
-        result = function_visitor_entry.get_env()['end']
-        function_visitor_entry.del_env_level()
+        result = visitor_entry.get_env()['end']
+        visitor_entry.del_env_level()
         return result
 
-    def visitAssetOperation(self, ctx: StipulaParser.AssetOperationContext, function_visitor_entry: FunctionVisitorEntry = None):
+    def visitAssetOperation(self, ctx: StipulaParser.AssetOperationContext, visitor_entry: FunctionVisitorEntry | EventVisitorEntry = None):
         if ctx.expression():
             left_type = self.visitExpression(ctx.expression())
             if ctx.ID(1):
@@ -141,10 +152,10 @@ class LiquidityVisitor(StipulaVisitor):
                     left_id = ctx.expression().getText()
                     if destination_id not in self.parties:
                         # [L-EXPAUND]
-                        destination_value = function_visitor_entry.get_current_field_value(destination_id)
-                        left_value = function_visitor_entry.get_current_field_value(left_id)
+                        destination_value = visitor_entry.get_current_field_value(destination_id)
+                        left_value = visitor_entry.get_current_field_value(left_id)
                         destination_value.add_operation(LiqConst.UPPER, left_value)
-                        function_visitor_entry.merge_function_asset_types(left_id, right_id)
+                        visitor_entry.merge_function_asset_types(left_id, right_id)
             else:
                 # left -o destination
                 destination_id = ctx.ID(0).getText()
@@ -154,20 +165,18 @@ class LiquidityVisitor(StipulaVisitor):
 
                     if destination_id not in self.parties:
                         # [L-AUPDATE]
-                        destination_value = function_visitor_entry.get_current_field_value(destination_id)
-                        left_value = function_visitor_entry.get_current_field_value(left_id)
+                        destination_value = visitor_entry.get_current_field_value(destination_id)
+                        left_value = visitor_entry.get_current_field_value(left_id)
                         destination_value.add_operation(LiqConst.UPPER, left_value)
                     # [L-AUPDATE] [L-ASEND]
-                    function_visitor_entry.set_field_value(left_id, LiqExpr(LiqConst.EMPTY))
+                    visitor_entry.set_field_value(left_id, LiqExpr(LiqConst.EMPTY))
                     if destination_id not in self.parties:
-                        function_visitor_entry.merge_function_asset_types(left_id, destination_id)
+                        visitor_entry.merge_function_asset_types(left_id, destination_id)
                 else:
                     # left is a value
-                    # TODO ?
                     pass
 
     def visitFieldOperation(self, ctx: StipulaParser.FieldOperationContext):
-        #print(f"fieldOperation {ctx.getText()}")
         pass
 
     def visitExpression(self, ctx: StipulaParser.ExpressionContext) -> str:
@@ -181,7 +190,6 @@ class LiquidityVisitor(StipulaVisitor):
         return ''
 
     def visitExpression1(self, ctx: StipulaParser.Expression1Context) -> str:
-        #print(f"expression1 {ctx.getText()}")
         if ctx.expression2():
             left_exp_type = self.visitExpression2(ctx.expression2())
             if ctx.NOT():
@@ -192,7 +200,6 @@ class LiquidityVisitor(StipulaVisitor):
         return ''
 
     def visitExpression2(self, ctx: StipulaParser.Expression2Context) -> str:
-        #print(f"expression2 {ctx.getText()}")
         if ctx.expression3():
             left_exp_type = self.visitExpression3(ctx.expression3())
             if ctx.expression2():
@@ -203,13 +210,15 @@ class LiquidityVisitor(StipulaVisitor):
         return ''
 
     def visitExpression3(self, ctx: StipulaParser.Expression3Context) -> str:
-        #print(f"expression3 {ctx.getText()}")
         if ctx.expression4():
             left_exp_type = self.visitExpression4(ctx.expression4())
             if ctx.expression3():
                 right_exp_type = self.visitExpression3(ctx.expression3())
-                # TODO controllo del tipo? se STRING, non posso fare il TIMES
                 if left_exp_type == right_exp_type:
+                    return left_exp_type
+                elif left_exp_type == 'NUMBER':
+                    return right_exp_type
+                elif right_exp_type == 'NUMBER':
                     return left_exp_type
                 return ''
             return left_exp_type
@@ -217,22 +226,22 @@ class LiquidityVisitor(StipulaVisitor):
 
 
     def visitExpression4(self, ctx: StipulaParser.Expression4Context) -> str:
-        #print(f"expression4 {ctx.getText()}")
         if ctx.expression5():
             left_exp_type = self.visitExpression5(ctx.expression5())
             if ctx.expression4():
                 right_exp_type = self.visitExpression4(ctx.expression4())
-                # TODO controllo del tipo? se STRING, non posso fare il TIMES
                 if left_exp_type == right_exp_type:
+                    return left_exp_type
+                elif left_exp_type == 'NUMBER':
+                    return right_exp_type
+                elif right_exp_type == 'NUMBER':
                     return left_exp_type
                 return ''
             return left_exp_type
         return ''
 
     def visitExpression5(self, ctx: StipulaParser.Expression5Context) -> str:
-        #print(f"expression5 {ctx.getText()}")
         if ctx.expression6():
-            # TODO controllo del tipo? se STRING, non posso metterci il MINUS
             return self.visitExpression6(ctx.expression6())
         return ''
 

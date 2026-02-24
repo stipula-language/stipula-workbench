@@ -5,10 +5,10 @@ from classes.data.liquidity_expression import LiqExpr, LiqConst
 # maximum number of times a function can appear in the same abstract computation (k-canonical)
 K: int = 1
 
-class LiquidityComputer:
+class LiquidityAnalyzer:
     def __init__(self):
         self.Q0 : str = ''  # initial state
-        self.global_assets: set[str] = set()
+        self.global_assets: list[str] = list()
 
         self.functions: set[FunctionVisitorEntry] = set()
         self.events: set[EventVisitorEntry] = set()
@@ -18,13 +18,15 @@ class LiquidityComputer:
         self.reachable_states: set[str] = set()
 
         self.Tqk : dict[str, set[AbsComputation]] = dict()
-        self.Qq : dict[str, set[FunctionVisitorEntry | EventVisitorEntry]] = dict()
+        self.Qq : dict[str, set[FunctionVisitorEntry | EventVisitorEntry]] = dict()     # unused (not in the thesis)
 
         self.has_events: bool = False
         self.has_guards: bool = False
 
     # region compute results
     def compute_results_verbose(self) -> tuple[bool, bool, bool]:
+        results = self.compute_results()
+
         print(f"\tFunction Liquidity Types:")
         for entry in (self.functions | self.events):
             entry_env = entry.get_env()
@@ -47,9 +49,14 @@ class LiquidityComputer:
             print(f"\t\t\t\t{abs_computation.get_asset_types()}")
             print(f"\t\t\tARE ALL ASSET TYPES SINGLETON:")
             print(f"\t\t\t\t{abs_computation.get_are_all_types_singleton()}")
-        return self.compute_results()
+        return results
 
     def compute_results(self) -> tuple[bool, bool, bool]:
+        self.compute_states()
+        # Computes abs_comps before local_liq, so abs_comps are always already available in verbose
+        self.compute_abs_computations()
+        if not self.compute_function_local_liquidity():
+            return False, self.has_events, self.has_guards
         self.compute_reachable_states()
         self.compute_tqk()
         are_all_types_singleton = all(
@@ -63,7 +70,7 @@ class LiquidityComputer:
     # endregion compute results
 
     # region getter, setter
-    def set_init_state_id(self, state_id):
+    def set_q0(self, state_id):
         self.Q0 = state_id
 
     def add_visitor_function(self, visitor_entry: FunctionVisitorEntry, has_guard: bool = False):
@@ -75,9 +82,9 @@ class LiquidityComputer:
         self.has_events = True
 
     def add_global_asset(self, asset):
-        self.global_assets.add(asset.text)
+        self.global_assets.append(asset.text)
 
-    def get_global_asset(self) -> set[str]:
+    def get_global_asset(self) -> list[str]:
          return self.global_assets
     # endregion setter
 
@@ -95,21 +102,21 @@ class LiquidityComputer:
                 return False
         return True
 
-    def compute_abs_computations(self) -> None:
+    def compute_states(self):
         """
-        Compute states and abstract computations starting from Q0
+        Computes all the states
         """
         self.states = set()
-        for event in self.events:
+        for entry in self.events | self.functions:
             # fill states set
-            self.states.add(event.start_state)
-            self.states.add(event.end_state)
+            self.states.add(entry.start_state)
+            self.states.add(entry.end_state)
 
+    def compute_abs_computations(self) -> None:
+        """
+        Compute abstract computations starting from Q0
+        """
         for function in self.functions:
-            # fill states set
-            self.states.add(function.start_state)
-            self.states.add(function.end_state)
-
             if function.start_state == self.Q0:
                 # create an abs_computation formed only by the function if function starts in Q0
                 abs_computation = AbsComputation()
@@ -168,6 +175,8 @@ class LiquidityComputer:
             self.Tqk[state] = set()
         for abs_computation in self.abs_computations:
             for configuration in abs_computation:
+                # TODO: errore: se nella computazione c'è due volte la stessa funzione e noi volevamo
+                #  partire dalla seconda, prenderà sempre la prima
                 self.Tqk[configuration.start_state].add(abs_computation.copy_abs_computation(configuration.start_state))
 
     # region efficient algorithm (unused)
@@ -261,7 +270,7 @@ class LiquidityComputer:
     # region costly algorithm
     def costly_algorithm_k_separate(self):
         for k in self.global_assets:
-            z : set[str] = set()
+            z : set[tuple[str,str]] = set(tuple())
             is_missing_state_found = True
             while is_missing_state_found:
                 is_missing_state_found = False
@@ -270,18 +279,18 @@ class LiquidityComputer:
                         abs_computation_env = abs_computation.get_env()
                         if (abs_computation_env['end'][k] != LiqExpr(LiqConst.EMPTY) and
                             abs_computation_env['start'][k] != abs_computation_env['end'][k] and
-                            abs_computation.get_last_state() not in z
+                            (abs_computation.get_last_state(),k) not in z
                         ):
                             is_missing_state_found = True
                             is_missing_state_added = False
                             for abs_computation_p in self.Tqk[abs_computation.get_last_state()]:
                                 abs_computation_p_env = abs_computation_p.get_env()
                                 if abs_computation_p_env['end'][k] == LiqExpr(LiqConst.EMPTY):
-                                    z.add(abs_computation.get_last_state())
+                                    z.add((abs_computation.get_last_state(),k))
                                     is_missing_state_added = True
                                     break
                             if not is_missing_state_added:
-                                print(f"\tCOSTLY K-SEPARATE - not liquid in:\n\t\tstate: {state}\n\t\tasset: {k}:\n\t\tcomp: {abs_computation}")
+                                print(f"\tCOSTLY K-SEPARATE - not liquid in:\n\t\tstate: {state}\n\t\tasset: {k}\n\t\tcomp: {abs_computation}")
                                 return False
         return True
 
@@ -306,7 +315,7 @@ class LiquidityComputer:
                                 is_abs_comp_valid = False
                                 break
                         if is_abs_comp_valid:
-                            for h in self.global_assets - kbar:
+                            for h in set(self.global_assets) - kbar:
                                 if (abs_computation_p.get_env()['end'][h] != LiqExpr(LiqConst.EMPTY) and
                                     abs_computation_p.get_env()['start'][h] != abs_computation_p.get_env()['end'][h]):
                                     is_abs_comp_valid = False
