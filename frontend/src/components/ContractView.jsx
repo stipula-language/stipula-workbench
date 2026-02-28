@@ -91,6 +91,44 @@ function ContractView(props) {
     }
   };
 
+  const ansiToHtml = (text) => {
+    const ansiRegex = /\x1b\[(\d+)m/g;
+    const parts = [];
+    let lastIndex = 0;
+    let match;
+    let currentColor = "inherit";
+
+    const colorMap = {
+      "31": "#cc3300",
+      "32": "#339900",
+      "33": "#ffa300",
+      "0": "inherit",
+    };
+
+    while ((match = ansiRegex.exec(text)) !== null) {
+      const index = match.index;
+      if (index > lastIndex) {
+        parts.push(
+          <span style={{ color: currentColor }} key={lastIndex}>
+            {text.slice(lastIndex, index)}
+          </span>
+        );
+      }
+      currentColor = colorMap[match[1]] || currentColor;
+      lastIndex = ansiRegex.lastIndex;
+    }
+
+    if (lastIndex < text.length) {
+      parts.push(
+        <span style={{ color: currentColor }} key={lastIndex}>
+          {text.slice(lastIndex)}
+        </span>
+      );
+    }
+
+    return parts;
+  };
+
 
   const handleAnalyze = async (isShort) => {
     setIsAnalyzing(true);
@@ -148,7 +186,7 @@ function ContractView(props) {
         throw new Error(result.error || 'Unknown server error.');
       }
 
-      setAnalysisResult({ type: 'success', data: result.output });
+      setAnalysisResult({ type: 'neutral', data: result.output });
 
     } catch (error) {
       console.log("e1")
@@ -585,7 +623,7 @@ function ContractView(props) {
                   {analysisResult && (
                     <div className={`analysis-box ${analysisResult.type}`}>
                       <h4>Analysis Results</h4>
-                      <pre>{analysisResult.data}</pre>
+                      <pre>{ansiToHtml(analysisResult.data)}</pre>
                     </div>
                   )}
               </div>

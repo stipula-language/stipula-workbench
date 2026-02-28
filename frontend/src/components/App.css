@@ -906,6 +906,12 @@ li {
   font-family: monospace;
 }
 
+.analysis-box.neutral {
+  background: #ffffff;
+  color: #000000;
+  border: 1px solid #000000;
+}
+
 .analysis-box.success {
   background: #1b3d1b;
   color: #b2f5b2;
