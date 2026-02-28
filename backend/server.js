@@ -84,7 +84,7 @@ app.post('/api/analyze', async (req, res) => {
 });
 
 app.post('/api/liquidity', async (req, res) => {
-  const { code, verbose } = req.body;
+  const { code, verbose, functionFrequency } = req.body;
 
   if (!code) {
     return res.status(400).json({ error: 'Nessun codice fornito.' });
@@ -100,7 +100,8 @@ app.post('/api/liquidity', async (req, res) => {
 
     const args = [
       path.join(analyzerDir, 'main.py'),
-      tempFilePath
+      tempFilePath,
+      functionFrequency
     ];
 
     if (verbose) {

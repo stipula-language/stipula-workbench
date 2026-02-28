@@ -31,6 +31,7 @@ function ContractView(props) {
   const [ws, setWs] = useState(null);
   const consoleOutputRef = useRef(null);
   const textareaRef = useRef(null);
+  const [functionFrequency, setInput] = useState(3); // ← valore selezionato iniziale
 
   const [editingFunction, setEditingFunction] = useState(null);
   
@@ -136,7 +137,7 @@ function ContractView(props) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ code: codeToAnalyze, verbose: isVerbose }),
+        body: JSON.stringify({ code: codeToAnalyze, verbose: isVerbose, functionFrequency }),
       });
       console.log("b2")
 
@@ -513,37 +514,49 @@ function ContractView(props) {
                   <div className="code-header">
                     <h3>Contract Code</h3>
                     <div className="code-actions">
-                      <button className="btn-edit" onClick={handleEditCode} disabled={isCodeEditable}>
-                        Edit
-                      </button>
-                      <button
-                        className="btn-analyze-short"
-                        onClick={() => handleAnalyze(true)}
-                        disabled={isAnalyzing}
-                      >
-                        {isAnalyzing && analysisType === 'short' ? "Analyzing..." : "Unreachability"}
-                      </button>
-                      <button
-                        className="btn-liquidity-analyze"
-                        onClick={() => handleLiquidityAnalyze(false)}
-                        disabled={isAnalyzing}
-                      >
-                        {isAnalyzing && analysisType === 'liquidity' ? "Analyzing..." : "Liquidity"}
-                      </button>
-                       <button 
-                        className="btn-analyze" 
-                        onClick={() => handleAnalyze(false)} 
-                        disabled={isAnalyzing}
-                      >
-                        {isAnalyzing && analysisType === 'verbose' ? "Analyzing..." : "Unreachability (verbose)"}
-                      </button>
-                      <button
-                        className="btn-liquidity-analyze-verbose"
-                        onClick={() => handleLiquidityAnalyze(true)}
-                        disabled={isAnalyzing}
-                      >
-                        {isAnalyzing && analysisType === 'liquidity-verbose' ? "Analyzing..." : "Liquidity (verbose)"}
-                      </button>
+                      <div className="code-actions-1">
+                        <button className="btn-edit" onClick={handleEditCode} disabled={isCodeEditable}>
+                          Edit
+                        </button>
+                        <button
+                          className="btn-analyze-short"
+                          onClick={() => handleAnalyze(true)}
+                          disabled={isAnalyzing}
+                        >
+                          {isAnalyzing && analysisType === 'short' ? "Analyzing..." : "Unreachability"}
+                        </button>
+                         <button
+                          className="btn-analyze"
+                          onClick={() => handleAnalyze(false)}
+                          disabled={isAnalyzing}
+                        >
+                          {isAnalyzing && analysisType === 'verbose' ? "Analyzing..." : "Unreachability (verbose)"}
+                        </button>
+                      </div>
+                      <div className="code-actions-2">
+                        <button
+                          className="btn-liquidity-analyze"
+                          onClick={() => handleLiquidityAnalyze(false)}
+                          disabled={isAnalyzing}
+                        >
+                          {isAnalyzing && analysisType === 'liquidity' ? "Analyzing..." : "Liquidity"}
+                        </button>
+                        <button
+                          className="btn-liquidity-analyze-verbose"
+                          onClick={() => handleLiquidityAnalyze(true)}
+                          disabled={isAnalyzing}
+                        >
+                          {isAnalyzing && analysisType === 'liquidity-verbose' ? "Analyzing..." : "Liquidity (verbose)"}
+                        </button>
+                        <input
+                          type="number"
+                          min={1}
+                          value={functionFrequency}
+                          onChange={(e) => setInput(Number(e.target.value))}
+                          className="form-input-frequency"
+                          required
+                        />
+                      </div>
                     </div>
                   </div>
                   
