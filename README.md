@@ -32,7 +32,7 @@ npm start
 
 ## Stipula Workbench Tool
 
-### How to Use the Editor
+### How to Run the Editor
 1. Enter a name for your contract at the top.  
 2. Add assets, fields, and parties using the corresponding input boxes and **Add** buttons.  
 3. Define agreements by selecting fields and parties, then click the plus icon to add them.
@@ -46,16 +46,20 @@ Alternatively:
 
 You can download the project with **Download All** (exports both `.json` and `.stipula`) or **Save Project** (exports only `.json`).
 
-### How to Use the Reachability Analyzer
+### How to Run the Reachability Analyzer
 1. Click:
    1. **Unreachability** to check contract reachability.  
    2. **Unreachability (verbose)** to see a detailed report.  
 2. Results will appear in the **Contract Code** panel below.  
 
-### How to Use the Liquidity Analyzer
+### How to Run the Liquidity Analyzer
 1. Find the **Liquidity** buttons above the contract code.
 2. Choose the __maximum number of times__ a function (and its nested events) can appear within a single abstract computation via the input box next to the buttons.
 3. Click:
    1. **Liquidity** to check contract liquidity.  
    2. **Liquidity (verbose)** for a detailed report.  
-4. Results will appear in the **Contract Code** panel below.  
+4. Results will appear in the **Contract Code** panel below.
+
+### How to Run the Interpreter
+1. Click Run button.
+2. Enter the required data in the dedicated box under the Stipula Interpreter and click the Send button
