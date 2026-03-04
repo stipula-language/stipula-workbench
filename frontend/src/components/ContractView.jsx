@@ -99,9 +99,10 @@ function ContractView(props) {
     let currentColor = "inherit";
 
     const colorMap = {
-      "31": "#cc3300",
-      "32": "#339900",
-      "33": "#ffa300",
+      "91": "#e60000",
+      "92": "#00b300",
+      "93": "#ffa300",
+      "94": "#0000e6",
       "0": "inherit",
     };
 
