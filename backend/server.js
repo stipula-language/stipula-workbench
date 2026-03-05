@@ -98,15 +98,10 @@ app.post('/api/liquidity', async (req, res) => {
 
     const venvPythonPath = path.join(analyzerDir, 'venv', 'bin', 'python');
 
-    const args = [
-      path.join(analyzerDir, 'main.py'),
-      tempFilePath,
-      functionFrequency
-    ];
-
-    if (verbose) {
-      args.push('--verbose');
-    }
+    const args = [path.join(analyzerDir, 'main.py')];
+    if (verbose) args.push('--verbose');
+    args.push(tempFilePath)
+    args.push(functionFrequency)
 
     console.log(`Eseguendo l'analizzatore con gli argomenti: ${args.join(' ')}`);
 
